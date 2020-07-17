@@ -1,0 +1,3 @@
+# Sliditor
+
+Slides visual editor.
