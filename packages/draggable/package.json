@@ -24,5 +24,8 @@
   },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "dependencies": {
+    "react": "^16.13.1"
   }
 }
