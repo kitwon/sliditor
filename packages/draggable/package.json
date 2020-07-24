@@ -27,5 +27,8 @@
   },
   "dependencies": {
     "react": "^16.13.1"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.43"
   }
 }
