@@ -1,14 +1,55 @@
 import { MutableRefObject } from 'react'
-import { DraggableState, MouseTouchEvent, DraggableData } from '../types'
-import { getTouch, offsetFromParent } from './dom'
-import { isNum } from './helpers'
+import { DraggableState, MouseTouchEvent, DraggableData, BoundsShape } from '../types'
+import { getTouch, offsetFromParent, innerWidth, outerWidth, innerHeight, outerHeight } from './dom'
+import { isNum, int } from './helpers'
 
-function findDomNode(draggaleRef: MutableRefObject<HTMLElement>) {
-  if (!draggaleRef) {
-    throw new Error('Draggabble unmounted during event!')
+export function getBoundPosition(
+  ref: MutableRefObject<HTMLElement>,
+  bounds: BoundsShape | string | undefined,
+  x: number,
+  y: number
+): [number, number] {
+  if (!bounds) return [x, y]
+
+  let newBounds: BoundsShape = typeof bounds === 'string' ? {} : bounds
+
+  const node = ref.current
+  if (typeof bounds === 'string') {
+    const { ownerDocument } = node
+    const ownerWindow = ownerDocument.defaultView
+    let boundNode
+    if (bounds === 'parent') {
+      boundNode = node.parentNode
+    } else {
+      boundNode = ownerDocument.querySelector(bounds)
+    }
+    if (!(boundNode instanceof ownerWindow.HTMLElement)) {
+      throw new Error(`Bounds selector "${bounds}" not exist.`)
+    }
+    const nodeStyle = ownerWindow.getComputedStyle(node)
+    const boundNodeStyle = ownerWindow.getComputedStyle(boundNode)
+
+    newBounds = {
+      left: -node.offsetLeft + int(boundNodeStyle.paddingLeft) + int(nodeStyle.marginLeft),
+      top: -node.offsetTop + int(boundNodeStyle.paddingTop) + int(nodeStyle.marginTop),
+      right:
+        innerWidth(boundNode) +
+        outerWidth(node) -
+        node.offsetLeft +
+        int(boundNodeStyle.paddingRight) -
+        int(nodeStyle.marginRight),
+      bottom:
+        innerHeight(boundNode) -
+        outerHeight(node) -
+        node.offsetTop +
+        int(boundNodeStyle.paddingBottom) -
+        int(nodeStyle.marginBottom)
+    }
   }
 
-  return draggaleRef.current
+  if (isNum(newBounds.right)) {
+    // TODO:
+  }
 }
 
 export function getContnrolPosition(
@@ -18,7 +59,7 @@ export function getContnrolPosition(
   scale: any
 ) {
   const touchObj = typeof touchIndentifier === 'number' ? getTouch(e, touchIndentifier) : null
-  if (typeof touchIndentifier !== 'number' && !touchObj) return null
+  if (typeof touchIndentifier === 'number' && !touchObj) return null
 
   const node = draggableRef.current
 
@@ -28,7 +69,7 @@ export function getContnrolPosition(
 }
 
 export function createCoreData(
-  ref: MutableRefObject<HTMLElement>,
+  ref: MutableRefObject<any>,
   state: DraggableState,
   x: number,
   y: number
@@ -55,5 +96,23 @@ export function createCoreData(
     lastY: state.lastY,
     x,
     y
+  }
+}
+
+export function createDraggableData(state: {
+  x: number
+  y: number
+  scale: number
+  coreData: DraggableData
+}) {
+  const { coreData, x, y, scale } = state
+  return {
+    node: coreData.node,
+    x: x + coreData.deltaX / scale,
+    y: y + coreData.deltaY / scale,
+    deltaX: coreData.deltaX / scale,
+    deltaY: coreData.deltaY / scale,
+    lastX: x,
+    lastY: y
   }
 }

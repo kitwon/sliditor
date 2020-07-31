@@ -1,132 +1,103 @@
-import { FC, cloneElement, ReactElement, useRef, useState } from 'react'
-import {
-  matchSelectorAndParent,
-  getTouchIdentifier,
-  addUserSelectStyles,
-  addEvent
-} from './utils/dom'
-import { MouseTouchEvent, DraggableState, DraggableData } from './types'
-import { getContnrolPosition, createCoreData } from './utils/positions'
+import React, {
+  ReactElement,
+  FC,
+  cloneElement,
+  useState,
+  useEffect,
+  useRef,
+  MutableRefObject
+} from 'react'
+import DragCore, { DragCoreProps } from './DragCore'
+import { ControlPosition, DraggableEventHandler, BoundsShape } from './types'
 import { log } from './utils/helpers'
+import { createCoreData, createDraggableData } from './utils/positions'
 
-interface DraggableProps {
+interface DraggableProps extends DragCoreProps {
   /**
-   * `allowAnyClick allows dragging using any mouse btuton`
-   * Default only accept the left button
-   *
-   * Defaults to `false`
+   * `axis` determines which axis the draggable can move.
+   * default 'both'
    */
-  allowAnyClick?: boolean
-  /**
-   * If true, stop the Component from dragging.
-   */
-  disable?: boolean
-  /**
-   * Specifies a selector to be used as the drag handler.
-   */
-  handle?: string
-  cancel?: string
-  enableUserSelect?: boolean
-  scale?: number
-  onMousedown: (e: MouseEvent) => void
-  /**
-   * Emit when draggable start, if return `false`,
-   * Draggable will stop.
-   */
-  onStart: (e: MouseEvent, core: DraggableData) => boolean | void
+  axis: 'both' | 'x' | 'y' | 'none'
+  className?: string
+  draggingClassName?: string
+  draggedClassName?: string
+  position: ControlPosition | null
+  defaultPosition: ControlPosition
   children: ReactElement
+  nodeRef?: MutableRefObject<any>
+  bounds?: BoundsShape | string
+  scale?: number
 }
-
-const events = {
-  mouse: {
-    start: 'mousedown',
-    move: 'movsemove',
-    stop: 'mouseup'
-  }
-}
-
-let dragEvent = events.mouse
 
 const Draggable: FC<DraggableProps> = (props) => {
   const {
     children,
-    onMousedown,
-    allowAnyClick,
-    disable,
-    handle,
-    cancel,
-    scale = 1,
+    position,
+    nodeRef,
+    bounds,
     onStart,
-    enableUserSelect
+    scale = 1,
+    defaultPosition = { x: 0, y: 0 }
   } = props
   const domNode = useRef<HTMLElement>(null)
-  const [state, setState] = useState<DraggableState>({
-    lastX: NaN,
-    lastY: NaN,
+  const [state, setState] = useState({
     dragging: false,
-    touchIndentifier: null
+    drgged: false,
+    x: position?.x ?? defaultPosition.x,
+    y: position?.y ?? defaultPosition.y,
+    prevPropsPos: { ...position },
+    slackX: 0,
+    slackY: 0,
+    isElementSVG: false
   })
 
-  const handleDragStart = (e: MouseTouchEvent) => {
-    if (onMousedown) onMousedown(e)
+  const findNode = () => nodeRef?.current ?? domNode?.current
 
-    // Only accept left click from mouse
-    if (!allowAnyClick && e.button !== 0) return
-
-    const node = domNode.current
-    if (node || node.ownerDocument || !node.ownerDocument.body) {
-      throw new Error('Draggable not mounted on DragStart')
+  useEffect(() => {
+    if (typeof window.SVGAElement !== 'undefined' && findNode() instanceof window.SVGAElement) {
+      setState({ ...state, isElementSVG: true })
     }
+  }, [nodeRef, domNode])
 
-    const { ownerDocument } = node
-    if (
-      disable ||
-      !(e.target instanceof ownerDocument.defaultView.Node) ||
-      (handle && !matchSelectorAndParent(e.target, handle, node)) ||
-      (cancel && matchSelectorAndParent(e.target, cancel, node))
-    ) {
-      return
-    }
+  const onDragStart: DraggableEventHandler = (e, coreData) => {
+    log('Draggable: onDragStart: %j', coreData)
 
-    // Prevent scrolling on mobile device.
-    if (e.type === 'touchstart') e.preventDefault()
+    const sholdStart =
+      onStart && onStart(e, createDraggableData({ x: state.x, y: state.y, scale, coreData }))
+    if (sholdStart === false) return
 
-    const touchIndentifier = getTouchIdentifier(e)
-    setState({ ...state, touchIndentifier })
-
-    const position = getContnrolPosition(e, domNode, touchIndentifier, scale)
-    if (position === null) return
-    const { x, y } = position
-
-    const coreEvent = createCoreData(domNode, state, x, y)
-
-    log('Draggable handleDrag: %j', coreEvent)
-
-    const shouldUpdate = onStart(e, coreEvent)
-    if (shouldUpdate === false) return
-
-    if (enableUserSelect) addUserSelectStyles(ownerDocument)
-
-    setState({
-      dragging: true,
-
-      lastX: x,
-      lastY: y
-    })
-
-    // TODO:
-    // add drag event
+    setState({ ...state, dragging: true, drgged: true })
   }
 
-  const handleMouseDown = (e: MouseTouchEvent) => {
-    dragEvent = events.mouse
+  const onDrag: DraggableEventHandler = (e, coreData) => {
+    if (!state.dragging) return
 
-    handleDragStart(e)
+    log('Draggable: onDrag: %j', coreData)
+    const uiData = createDraggableData({ x: state.x, y: state.y, scale, coreData })
+
+    const newState = {
+      x: uiData.x,
+      y: uiData.y
+    }
+
+    if (bounds) {
+      const { x, y } = newState
+
+      newState.x += state.slackX
+      newState.y += state.slackY
+
+      // TODO:
+      // add bound calc
+    }
   }
 
-  return cloneElement(children, {
-    ref: domNode
-  })
+  return (
+    <DragCore onStart={onDragStart}>
+      {cloneElement(children, {
+        ref: domNode
+      })}
+    </DragCore>
+  )
 }
 
 export default Draggable

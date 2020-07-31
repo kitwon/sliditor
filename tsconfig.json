@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "esnext",
     "lib": [
       "DOM",
       "DOM.Iterable",
@@ -8,7 +8,6 @@
     ],
     "jsx": "react",
     "allowJs": true,
-    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "module": "esnext",

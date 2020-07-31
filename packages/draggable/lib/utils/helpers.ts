@@ -16,6 +16,17 @@ export function isNum(number: number) {
   return typeof number === 'number' && !Number.isNaN(number)
 }
 
+export function int(number) {
+  return parseInt(number, 10)
+}
+
+export function snapToGrid(grid: [number, number], pendingX: number, pendingY: number) {
+  const x = Math.round(pendingX / grid[0]) * grid[0]
+  const y = Math.round(pendingY / grid[1]) * grid[1]
+
+  return [x, y]
+}
+
 export function log(...args) {
   if (process.env.NODE_ENV === 'development') {
     console.log(...args)

@@ -15,6 +15,13 @@ export interface DraggableData {
   lastY: number
 }
 
+export interface BoundsShape {
+  left: number
+  right: number
+  top: number
+  bottom: number
+}
+
 export interface ControlPosition {
   x: number
   y: number

@@ -1,4 +1,4 @@
-import { find, isFunction } from './helpers'
+import { find, isFunction, int } from './helpers'
 import { MouseTouchEvent } from '../types'
 
 export function addClass(el: HTMLElement, classname: string) {
@@ -90,6 +90,7 @@ export function matchSelectorAndParent(el: Node, selector: string, baseNode: Nod
 }
 
 export function getTouch(e: MouseTouchEvent, indentifier: number) {
+  console.log(e)
   return (
     (e.targetTouches &&
       find<any, TouchList>(e.targetTouches, (t) => indentifier === t.indentifier)) ||
@@ -149,4 +150,32 @@ export function removeUserSelectStyle(doc?: Document) {
     }
     // eslint-disable-next-line no-empty
   } catch (e) {}
+}
+
+export function outerWidth(node: HTMLElement) {
+  let width = node.clientWidth
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
+  width -= int(computedStyle.borderLeftWidth) + int(computedStyle.borderRightWidth)
+  return width
+}
+
+export function outerHeight(node: HTMLElement) {
+  let height = node.clientWidth
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
+  height -= int(computedStyle.borderTopWidth) + int(computedStyle.borderBottomWidth)
+  return height
+}
+
+export function innerWidth(node: HTMLElement) {
+  let width = node.clientWidth
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
+  width -= int(computedStyle.paddingLeft) + int(computedStyle.paddingRight)
+  return width
+}
+
+export function innerHeight(node: HTMLElement) {
+  let height = node.clientWidth
+  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
+  height -= int(computedStyle.paddingTop) + int(computedStyle.paddingBottom)
+  return height
 }
