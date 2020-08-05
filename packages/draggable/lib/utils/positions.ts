@@ -3,17 +3,27 @@ import { DraggableState, MouseTouchEvent, DraggableData, BoundsShape } from '../
 import { getTouch, offsetFromParent, innerWidth, outerWidth, innerHeight, outerHeight } from './dom'
 import { isNum, int } from './helpers'
 
+function cloneBounds(bounds: BoundsShape): BoundsShape {
+  return {
+    left: bounds.left,
+    right: bounds.right,
+    top: bounds.top,
+    bottom: bounds.bottom
+  }
+}
+
 export function getBoundPosition(
-  ref: MutableRefObject<HTMLElement>,
+  node: HTMLElement,
   bounds: BoundsShape | string | undefined,
   x: number,
   y: number
 ): [number, number] {
   if (!bounds) return [x, y]
 
-  let newBounds: BoundsShape = typeof bounds === 'string' ? {} : bounds
+  let newX = x
+  let newY = y
+  let newBounds = typeof bounds === 'string' ? {} : cloneBounds(bounds)
 
-  const node = ref.current
   if (typeof bounds === 'string') {
     const { ownerDocument } = node
     const ownerWindow = ownerDocument.defaultView
@@ -29,11 +39,12 @@ export function getBoundPosition(
     const nodeStyle = ownerWindow.getComputedStyle(node)
     const boundNodeStyle = ownerWindow.getComputedStyle(boundNode)
 
+    console.log(node.offsetLeft)
     newBounds = {
       left: -node.offsetLeft + int(boundNodeStyle.paddingLeft) + int(nodeStyle.marginLeft),
       top: -node.offsetTop + int(boundNodeStyle.paddingTop) + int(nodeStyle.marginTop),
       right:
-        innerWidth(boundNode) +
+        innerWidth(boundNode) -
         outerWidth(node) -
         node.offsetLeft +
         int(boundNodeStyle.paddingRight) -
@@ -47,9 +58,13 @@ export function getBoundPosition(
     }
   }
 
-  if (isNum(newBounds.right)) {
-    // TODO:
-  }
+  if (isNum(newBounds.right)) newX = Math.min(newX, newBounds.right)
+  if (isNum(newBounds.bottom)) newY = Math.min(newY, newBounds.bottom)
+
+  if (isNum(newBounds.left)) newX = Math.max(newX, newBounds.left)
+  if (isNum(newBounds.top)) newY = Math.max(newY, newBounds.top)
+
+  return [newX, newY]
 }
 
 export function getContnrolPosition(

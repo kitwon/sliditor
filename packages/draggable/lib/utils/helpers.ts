@@ -27,8 +27,17 @@ export function snapToGrid(grid: [number, number], pendingX: number, pendingY: n
   return [x, y]
 }
 
+export function canDragX(axis) {
+  return axis === 'both' || axis === 'x'
+}
+
+export function canDragY(axis) {
+  return axis === 'both' || axis === 'y'
+}
+
 export function log(...args) {
   if (process.env.NODE_ENV === 'development') {
-    console.log(...args)
+    // eslint-disable-next-line
+    // console.log(...args)
   }
 }

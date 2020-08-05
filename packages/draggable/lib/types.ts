@@ -16,10 +16,10 @@ export interface DraggableData {
 }
 
 export interface BoundsShape {
-  left: number
-  right: number
-  top: number
-  bottom: number
+  left?: number
+  right?: number
+  top?: number
+  bottom?: number
 }
 
 export interface ControlPosition {
@@ -28,8 +28,8 @@ export interface ControlPosition {
 }
 
 export interface OffsetPositionOfControl {
-  x: number | string
-  y: number | string
+  x?: number | string
+  y?: number | string
 }
 
 export interface ITouchEvent extends TouchEvent {
@@ -37,6 +37,6 @@ export interface ITouchEvent extends TouchEvent {
   targetTouches: TouchList
 }
 
-export type DraggableEventHandler = (e: MouseEvent, data: DraggableData) => void
+export type DraggableEventHandler = (e: MouseEvent, data: DraggableData) => void | boolean
 
 export type MouseTouchEvent = MouseEvent & ITouchEvent

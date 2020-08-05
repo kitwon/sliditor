@@ -1,5 +1,6 @@
 import { find, isFunction, int } from './helpers'
-import { MouseTouchEvent } from '../types'
+import { MouseTouchEvent, ControlPosition, OffsetPositionOfControl } from '../types'
+import browserPrefix, { browserPrefixToKey } from './prefix'
 
 export function addClass(el: HTMLElement, classname: string) {
   if (el.classList) {
@@ -155,27 +156,66 @@ export function removeUserSelectStyle(doc?: Document) {
 export function outerWidth(node: HTMLElement) {
   let width = node.clientWidth
   const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
-  width -= int(computedStyle.borderLeftWidth) + int(computedStyle.borderRightWidth)
+  width += int(computedStyle.borderLeftWidth)
+  width += int(computedStyle.borderRightWidth)
   return width
 }
 
 export function outerHeight(node: HTMLElement) {
-  let height = node.clientWidth
+  let height = node.clientHeight
   const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
-  height -= int(computedStyle.borderTopWidth) + int(computedStyle.borderBottomWidth)
+  height += int(computedStyle.borderTopWidth) + int(computedStyle.borderBottomWidth)
+  height += int(computedStyle.borderBottomWidth)
   return height
 }
 
 export function innerWidth(node: HTMLElement) {
   let width = node.clientWidth
   const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
-  width -= int(computedStyle.paddingLeft) + int(computedStyle.paddingRight)
+  width -= int(computedStyle.paddingLeft)
+  width -= int(computedStyle.paddingRight)
   return width
 }
 
 export function innerHeight(node: HTMLElement) {
-  let height = node.clientWidth
+  let height = node.clientHeight
   const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
-  height -= int(computedStyle.paddingTop) + int(computedStyle.paddingBottom)
+  height -= int(computedStyle.paddingTop)
+  height -= int(computedStyle.paddingBottom)
   return height
+}
+
+export function getTranslation(
+  { x, y }: ControlPosition,
+  positionOffset: OffsetPositionOfControl,
+  unit: string
+) {
+  let translation = `translate(${x}${unit}, ${y}${unit})`
+  if (positionOffset) {
+    const defaultX = `${
+      typeof positionOffset.x === 'string' ? positionOffset.x : `${positionOffset.x}unit`
+    }`
+    const defaultY = `${
+      typeof positionOffset.y === 'string' ? positionOffset.y : `${positionOffset.y}unit`
+    }`
+    translation = `translate(${defaultX}, ${defaultY})${translation}`
+  }
+
+  return translation
+}
+
+export function createCSSTransform(
+  controlPos: ControlPosition,
+  positionOffset: OffsetPositionOfControl
+) {
+  const translation = getTranslation(controlPos, positionOffset, 'px')
+  return { [browserPrefixToKey('transform', browserPrefix)]: translation }
+}
+
+export function createSVGTransform(
+  controlPos: ControlPosition,
+  positionOffset: OffsetPositionOfControl
+) {
+  const translation = getTranslation(controlPos, positionOffset, '')
+  return translation
 }

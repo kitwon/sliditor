@@ -1,0 +1,25 @@
+.rc {
+  &-draggable {
+    display: inline-block;
+    cursor: move;
+    width: 80px;
+    height: 80px;
+    padding: 10px;
+    border: 1px dashed pink;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &-dragged {
+    border-color: royalblue !important;
+  }
+
+  &-dragging {
+    border-color: purple !important;
+  }
+}
+
+.custom-class {
+  border-color: yellowgreen;
+}

@@ -1,3 +1,4 @@
+/* eslint react/jsx-props-no-spreading: off */
 import React, {
   ReactElement,
   FC,
@@ -5,77 +6,161 @@ import React, {
   useState,
   useEffect,
   useRef,
-  MutableRefObject
+  MutableRefObject,
+  CSSProperties
 } from 'react'
+import classNames from 'classnames'
 import DragCore, { DragCoreProps } from './DragCore'
-import { ControlPosition, DraggableEventHandler, BoundsShape } from './types'
-import { log } from './utils/helpers'
-import { createCoreData, createDraggableData } from './utils/positions'
+import {
+  ControlPosition,
+  DraggableEventHandler,
+  BoundsShape,
+  OffsetPositionOfControl
+} from './types'
+import { log, canDragX, canDragY } from './utils/helpers'
+import { createDraggableData, getBoundPosition } from './utils/positions'
+import { createSVGTransform, createCSSTransform } from './utils/dom'
+import useReferenceState from './hooks/useReferenceState'
 
-interface DraggableProps extends DragCoreProps {
+export interface DraggableProps extends DragCoreProps {
   /**
    * `axis` determines which axis the draggable can move.
    * default 'both'
    */
-  axis: 'both' | 'x' | 'y' | 'none'
+  axis?: 'both' | 'x' | 'y'
+
+  style?: CSSProperties
   className?: string
   draggingClassName?: string
   draggedClassName?: string
-  position: ControlPosition | null
-  defaultPosition: ControlPosition
-  children: ReactElement
+
+  /**
+   * Specifies **current** x,y position (include start) when drag end.
+   * Useful for guideline and sticked action.
+   */
+  position?: ControlPosition
+
+  /**
+   * Specifies the x,y position that the drag element should start at
+   */
+  startPosition?: ControlPosition
   nodeRef?: MutableRefObject<any>
+  /**
+   * Bounds is the range of movement available to the element.
+   *
+   * ⚠️ Notice that here use `offsetTop` and `offsetLeft` to calcute the bounds.
+   * If use 'parent' or specifies classname,
+   * Add `position` to the parentNode make it run perfectly.
+   */
   bounds?: BoundsShape | string
   scale?: number
+  positionOffset?: OffsetPositionOfControl
+  children: ReactElement
 }
 
 const Draggable: FC<DraggableProps> = (props) => {
   const {
     children,
+    style,
+    className,
+    draggedClassName,
+    draggingClassName,
     position,
     nodeRef,
     bounds,
-    onStart,
+    positionOffset,
     scale = 1,
-    defaultPosition = { x: 0, y: 0 }
+    axis = 'both',
+    startPosition = { x: 0, y: 0 },
+    onStop,
+    onStart,
+    onDrag
   } = props
   const domNode = useRef<HTMLElement>(null)
-  const [state, setState] = useState({
+  const [stateRef, setState, refState] = useReferenceState({
     dragging: false,
-    drgged: false,
-    x: position?.x ?? defaultPosition.x,
-    y: position?.y ?? defaultPosition.y,
+    dragged: false,
+    x: position?.x ?? startPosition.x,
+    y: position?.y ?? startPosition.y,
     prevPropsPos: { ...position },
     slackX: 0,
     slackY: 0,
     isElementSVG: false
   })
+  const [childProps, setChildProps] = useState({
+    style: {},
+    className: '',
+    transform: ''
+  })
 
   const findNode = () => nodeRef?.current ?? domNode?.current
 
+  // Effects
   useEffect(() => {
     if (typeof window.SVGAElement !== 'undefined' && findNode() instanceof window.SVGAElement) {
-      setState({ ...state, isElementSVG: true })
+      setState({ ...stateRef.current, isElementSVG: true })
     }
   }, [nodeRef, domNode])
 
-  const onDragStart: DraggableEventHandler = (e, coreData) => {
-    log('Draggable: onDragStart: %j', coreData)
+  useEffect(() => {
+    const state = stateRef.current
+    const controlled = Boolean(position)
+    const draggable = !controlled || state.dragging
+
+    const validatePosition = position || startPosition
+    const transformOpts = {
+      x: canDragX(axis) && draggable ? state.x : validatePosition.x,
+      y: canDragY(axis) && draggable ? state.y : validatePosition.y
+    }
+
+    let svgTransform = null
+    let cssTransform = {}
+    if (state.isElementSVG) {
+      svgTransform = createSVGTransform(transformOpts, positionOffset)
+    } else {
+      cssTransform = createCSSTransform(transformOpts, positionOffset)
+    }
+
+    const classnames = classNames(className || '', children.props.className || '', {
+      [draggedClassName]: state.dragged,
+      [draggingClassName]: state.dragging
+    })
+
+    setChildProps({
+      style: { ...style, ...cssTransform },
+      className: classnames,
+      transform: svgTransform
+    })
+  }, [refState])
+
+  useEffect(() => {
+    if (position && !stateRef.current.dragging) {
+      const { x, y } = position
+      setState({ ...stateRef.current, x, y })
+    }
+  }, [position])
+
+  // Actions
+  const handleDragStart: DraggableEventHandler = (e, coreData) => {
+    const state = stateRef.current
+    log('Draggable: handleDragStart: %j', coreData)
 
     const sholdStart =
       onStart && onStart(e, createDraggableData({ x: state.x, y: state.y, scale, coreData }))
-    if (sholdStart === false) return
+    if (sholdStart === false) return false
 
-    setState({ ...state, dragging: true, drgged: true })
+    setState({ ...state, dragging: true, dragged: true })
+    return undefined
   }
 
-  const onDrag: DraggableEventHandler = (e, coreData) => {
-    if (!state.dragging) return
+  const handleDrag: DraggableEventHandler = (e, coreData) => {
+    const state = stateRef.current
+    if (!state.dragging) return undefined
 
-    log('Draggable: onDrag: %j', coreData)
+    log('Draggable: handleDrag: %j', coreData)
     const uiData = createDraggableData({ x: state.x, y: state.y, scale, coreData })
 
-    const newState = {
+    const newState: Partial<typeof state> = {
       x: uiData.x,
       y: uiData.y
     }
@@ -86,15 +171,52 @@ const Draggable: FC<DraggableProps> = (props) => {
       newState.x += state.slackX
       newState.y += state.slackY
 
-      // TODO:
-      // add bound calc
+      const [newStateX, newStateY] = getBoundPosition(findNode(), bounds, newState.x, newState.y)
+      newState.x = newStateX
+      newState.y = newStateY
+
+      newState.slackX = state.slackX + (x - newState.x)
+      newState.slackY = state.slackY + (y - newState.y)
+
+      uiData.x = newState.x
+      uiData.y = newState.y
+      uiData.deltaX = newState.x - state.x
+      uiData.deltaY = newState.y - state.y
     }
+
+    const shouldUpdate = onDrag && onDrag(e, uiData)
+    if (shouldUpdate === false) return false
+
+    setState({ ...state, ...newState })
+    return undefined
+  }
+
+  const handleDragStop: DraggableEventHandler = (e, coreData) => {
+    const state = stateRef.current
+    if (!state.dragging) return undefined
+
+    const shouldContinune = onStop && onStop(e, coreData)
+    if (shouldContinune === false) return false
+
+    log('Draggable: onDragStop: %j', coreData)
+
+    const newState: Partial<typeof state> = {
+      dragging: false,
+      slackX: 0,
+      slackY: 0
+    }
+
+    setState({ ...state, ...newState })
+    return undefined
   }
 
   return (
-    <DragCore onStart={onDragStart}>
+    <DragCore
+      {...{ ...props, onStart: handleDragStart, onDrag: handleDrag, onStop: handleDragStop }}
+      ref={domNode}
+    >
       {cloneElement(children, {
-        ref: domNode
+        ...childProps
       })}
     </DragCore>
   )

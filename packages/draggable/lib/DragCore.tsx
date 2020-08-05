@@ -1,4 +1,12 @@
-import { FC, cloneElement, ReactElement, useRef, useState, useEffect } from 'react'
+import {
+  FC,
+  cloneElement,
+  ReactElement,
+  useRef,
+  useEffect,
+  forwardRef,
+  MutableRefObject
+} from 'react'
 import {
   matchSelectorAndParent,
   getTouchIdentifier,
@@ -7,9 +15,9 @@ import {
   removeUserSelectStyle,
   removeEvent
 } from './utils/dom'
-import { MouseTouchEvent, DraggableState, DraggableData } from './types'
+import { MouseTouchEvent, DraggableData } from './types'
 import { getContnrolPosition, createCoreData } from './utils/positions'
-import { log, snapToGrid } from './utils/helpers'
+import { log, snapToGrid, isFunction } from './utils/helpers'
 
 export interface DragCoreProps {
   /**
@@ -61,7 +69,7 @@ const events = {
 
 let dragEvent = events.mouse
 
-const DragCore: FC<DragCoreProps> = (props) => {
+const DragCore = forwardRef<HTMLElement, DragCoreProps>((props, ref) => {
   const {
     children,
     allowAnyClick,
@@ -70,21 +78,24 @@ const DragCore: FC<DragCoreProps> = (props) => {
     cancel,
     grid,
     scale = 1,
-    enableUserSelect,
-    onStart = () => null,
-    onDrag = () => null,
-    onStop = () => null,
-    onMousedown = () => null
+    enableUserSelect = true,
+    onStart = () => 0,
+    onDrag = () => 0,
+    onStop = () => 0,
+    onMousedown = () => 0
   } = props
-  const domNode = useRef<HTMLElement>(null)
-  let state = {
+  const stateRef = useRef({
     lastX: NaN,
     lastY: NaN,
     dragging: false,
     touchIndentifier: null
-  }
+  })
+
+  // ref never use as function
+  const domNode = ref as MutableRefObject<HTMLElement>
 
   const handleDragStop = (e: MouseTouchEvent) => {
+    const state = stateRef.current
     if (!state.dragging) return
 
     const position = getContnrolPosition(e, domNode, state.touchIndentifier, scale)
@@ -99,9 +110,9 @@ const DragCore: FC<DragCoreProps> = (props) => {
       removeUserSelectStyle(domNode.current.ownerDocument)
     }
 
-    log('Draggable stop: %j', coreEvent)
+    log('DragCore - handleStop: %j', coreEvent)
 
-    state = { ...state, dragging: false, lastX: NaN, lastY: NaN }
+    stateRef.current = { ...state, dragging: false, lastX: NaN, lastY: NaN }
 
     if (domNode) {
       // eslint-disable-next-line no-use-before-define
@@ -111,6 +122,7 @@ const DragCore: FC<DragCoreProps> = (props) => {
   }
 
   const handleDrag = (e: MouseTouchEvent) => {
+    const state = stateRef.current
     const position = getContnrolPosition(e, domNode, state.touchIndentifier, scale)
 
     if (position === null) return
@@ -123,7 +135,7 @@ const DragCore: FC<DragCoreProps> = (props) => {
     }
 
     const coreEvent = createCoreData(domNode, state, x, y)
-    log('Dragging: %j', coreEvent)
+    log('DragCore - handleDrag: %j', coreEvent)
 
     // Manually emit the stop event
     const shouldUpdate = onDrag(e, coreEvent)
@@ -135,14 +147,15 @@ const DragCore: FC<DragCoreProps> = (props) => {
       return
     }
 
-    state = { ...state, dragging: true, lastX: x, lastY: y }
+    stateRef.current = { ...state, dragging: true, lastX: x, lastY: y }
   }
 
   /**
-   * Run in staring
+   * Handle staring
    * @param { MouseTouchEvent } e Event
    */
   const handleDragStart = (e: MouseTouchEvent) => {
+    const state = stateRef.current
     if (onMousedown) onMousedown(e)
 
     // Only accept left click from mouse
@@ -168,7 +181,7 @@ const DragCore: FC<DragCoreProps> = (props) => {
     if (e.type === 'touchstart') e.preventDefault()
 
     const touchIndentifier = getTouchIdentifier(e)
-    state = { ...state, touchIndentifier }
+    stateRef.current = { ...state, touchIndentifier }
 
     const position = getContnrolPosition(e, domNode, touchIndentifier, scale)
     if (position === null) return
@@ -176,14 +189,14 @@ const DragCore: FC<DragCoreProps> = (props) => {
 
     const coreEvent = createCoreData(domNode, state, x, y)
 
-    log('Draggable handleDrag: %j', coreEvent)
+    log('DragCore - handleDragStart: %j', coreEvent)
 
     const shouldUpdate = onStart(e, coreEvent)
     if (shouldUpdate === false) return
 
     if (enableUserSelect) addUserSelectStyles(ownerDocument)
 
-    state = {
+    stateRef.current = {
       ...state,
       dragging: true,
       lastX: x,
@@ -220,22 +233,24 @@ const DragCore: FC<DragCoreProps> = (props) => {
     }
 
     return () => {
-      const { ownerDocument } = domNode?.current
-      removeEvent(ownerDocument, events.mouse.move, handleDrag)
-      removeEvent(ownerDocument, events.touch.move, handleDrag)
-      removeEvent(ownerDocument, events.mouse.stop, handleDragStop)
-      removeEvent(ownerDocument, events.touch.stop, handleDragStop)
-      removeEvent(domNode.current, events.touch.start, onTouchStart, { passive: false })
-      if (enableUserSelect) removeUserSelectStyle(ownerDocument)
+      if (domNode?.current) {
+        const { ownerDocument } = domNode.current
+        removeEvent(ownerDocument, events.mouse.move, handleDrag)
+        removeEvent(ownerDocument, events.touch.move, handleDrag)
+        removeEvent(ownerDocument, events.mouse.stop, handleDragStop)
+        removeEvent(ownerDocument, events.touch.stop, handleDragStop)
+        removeEvent(domNode.current, events.touch.start, onTouchStart, { passive: false })
+        if (enableUserSelect) removeUserSelectStyle(ownerDocument)
+      }
     }
   }, [domNode])
 
   return cloneElement(children, {
-    ref: domNode,
+    ref,
     onMouseDown,
     onMouseUp,
     onTouchEnd
   })
-}
+})
 
 export default DragCore
