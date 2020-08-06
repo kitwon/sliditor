@@ -71,7 +71,7 @@ export function matchSelector(el: Node, selector: string) {
         'msMatchesSelector',
         'oMatchesSelector'
       ],
-      (method) => isFunction(method)
+      (method) => isFunction(el[method])
     )
   }
 
@@ -91,12 +91,9 @@ export function matchSelectorAndParent(el: Node, selector: string, baseNode: Nod
 }
 
 export function getTouch(e: MouseTouchEvent, indentifier: number) {
-  console.log(e)
   return (
-    (e.targetTouches &&
-      find<any, TouchList>(e.targetTouches, (t) => indentifier === t.indentifier)) ||
-    (e.changedTouches &&
-      find<any, TouchList>(e.changedTouches, (t) => indentifier === t.indentifier))
+    (e.targetTouches && find<any>(e.targetTouches as any, (t) => indentifier === t.indentifier)) ||
+    (e.changedTouches && find<any>(e.changedTouches as any, (t) => indentifier === t.indentifier))
   )
 }
 
@@ -193,10 +190,10 @@ export function getTranslation(
   let translation = `translate(${x}${unit}, ${y}${unit})`
   if (positionOffset) {
     const defaultX = `${
-      typeof positionOffset.x === 'string' ? positionOffset.x : `${positionOffset.x}unit`
+      typeof positionOffset.x === 'string' ? positionOffset.x : `${positionOffset.x}${unit}`
     }`
     const defaultY = `${
-      typeof positionOffset.y === 'string' ? positionOffset.y : `${positionOffset.y}unit`
+      typeof positionOffset.y === 'string' ? positionOffset.y : `${positionOffset.y}${unit}`
     }`
     translation = `translate(${defaultX}, ${defaultY})${translation}`
   }

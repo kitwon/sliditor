@@ -1,0 +1,31 @@
+---
+title: Grid 栅格
+description: 24 栅格系统。栅格中不同的大小都能根据媒体查询断点实现响应式布局
+---
+
+## 一般浮动布局
+使用一般浮动布局时候需要使用**.clearfix**容器包裹住浮动的元素。
+
+```html
+<div className="clearfix">
+  <div className="col-8 float-left border p-1">One</div>
+  <div className="col-8 float-left border p-1">Two</div>
+  <div className="col-8 float-left border p-1">Three</div>
+</div>
+```
+
+### 反向布局
+
+```html
+<div className="clearfix">
+  <div className="col-4 float-right border p-1">
+    One
+  </div>
+  <div className="col-4 float-right border p-1">
+    Two
+  </div>
+  <div className="col-4 float-right border p-1">
+    Three
+  </div>
+</div>
+```

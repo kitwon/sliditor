@@ -1,12 +1,17 @@
+body {
+  font-family: Roboto,-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI","Oxygen","Ubuntu","Cantarell","Open Sans",sans-serif;
+}
+
 .rc {
   &-draggable {
     display: inline-block;
     cursor: move;
-    width: 80px;
-    height: 80px;
-    padding: 10px;
+    width: 110px;
+    height: 110px;
+    padding: 5px;
     border: 1px dashed pink;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
   }
@@ -20,6 +25,31 @@
   }
 }
 
+.flex-auto {
+  flex: auto;
+}
+
 .custom-class {
   border-color: yellowgreen;
+}
+
+.no-drag {
+  cursor: auto;
+}
+
+.drag {
+  cursor: move;
+}
+
+.handle,
+.cancel {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 6px;
+  background: #eee;
+  padding: 3px 6px;
+}
+
+.cancel {
+  font-size: 12px;
 }

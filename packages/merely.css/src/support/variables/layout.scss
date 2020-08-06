@@ -1,0 +1,82 @@
+// Box display values
+$display-map: (
+  block,
+  flex,
+  inline,
+  inline-block,
+  none
+);
+
+// Spacing variables
+//
+$spacer: 8px !default;
+
+// Spacing scale
+$spacer-0: 0 !default;                  // 0
+$spacer-1: round($spacer / 2) !default; // 4px
+$spacer-2: $spacer !default;            // 8px
+$spacer-3: $spacer * 2 !default;        // 16px
+$spacer-4: $spacer * 3 !default;        // 24px
+$spacer-5: $spacer * 4 !default;        // 32px
+$spacer-6: $spacer * 5 !default;        // 40px
+
+// The list of spacer values
+$spacers: (
+  $spacer-0,
+  $spacer-1,
+  $spacer-2,
+  $spacer-3,
+  $spacer-4,
+  $spacer-5,
+  $spacer-6,
+) !default;
+
+// Map of spacers, for easier looping:
+// @each $scale, $length in $spacer-map { ... }
+$spacer-map: (
+  0: $spacer-0,
+  1: $spacer-1,
+  2: $spacer-2,
+  3: $spacer-3,
+  4: $spacer-4,
+  5: $spacer-5,
+  6: $spacer-6,
+) !default;
+
+// container variables
+$container-width: 980px !default;
+$grid-gutter:     10px !default;
+
+// Breakpoint width
+// small -- phone 手机
+// middle -- tablet 平板
+// large -- desktop 电脑 (980 + 16 * 2) => container + gutter
+// extral large -- desktop 宽屏
+$width-xs: 0px !default;
+$width-sm: 544px !default;
+$width-md: 768px !default;
+$width-lg: 1012px !default;
+$width-xl: 1280px !default;
+
+// Responsive container width
+$container-sm: $width-sm !default;
+$container-md: $width-md !default;
+$container-lg: $width-lg !default;
+$container-xl: $width-xl !default;
+
+// Map of breakpoints
+// Use to iterate over breakpoint n create repoinsive class in loop
+$breakpoints: (
+  sm: $width-sm,
+  md: $width-md,
+  lg: $width-lg,
+  xl: $width-xl,
+) !default;
+
+$responsive-variants: (
+  "": "",
+  sm: "-sm",
+  md: "-md",
+  lg: "-lg",
+  xl: "-xl",
+) !default;

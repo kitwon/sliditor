@@ -44,7 +44,7 @@ export interface DraggableProps extends DragCoreProps {
    * Specifies the x,y position that the drag element should start at
    */
   startPosition?: ControlPosition
-  nodeRef?: MutableRefObject<any>
+  positionOffset?: OffsetPositionOfControl
   /**
    * Bounds is the range of movement available to the element.
    *
@@ -53,8 +53,6 @@ export interface DraggableProps extends DragCoreProps {
    * Add `position` to the parentNode make it run perfectly.
    */
   bounds?: BoundsShape | string
-  scale?: number
-  positionOffset?: OffsetPositionOfControl
   children: ReactElement
 }
 
@@ -66,7 +64,6 @@ const Draggable: FC<DraggableProps> = (props) => {
     draggedClassName,
     draggingClassName,
     position,
-    nodeRef,
     bounds,
     positionOffset,
     scale = 1,
@@ -93,14 +90,15 @@ const Draggable: FC<DraggableProps> = (props) => {
     transform: ''
   })
 
-  const findNode = () => nodeRef?.current ?? domNode?.current
-
   // Effects
   useEffect(() => {
-    if (typeof window.SVGAElement !== 'undefined' && findNode() instanceof window.SVGAElement) {
+    if (
+      typeof window.SVGAElement !== 'undefined' &&
+      domNode.current instanceof window.SVGAElement
+    ) {
       setState({ ...stateRef.current, isElementSVG: true })
     }
-  }, [nodeRef, domNode])
+  }, [domNode])
 
   useEffect(() => {
     const state = stateRef.current
@@ -171,7 +169,12 @@ const Draggable: FC<DraggableProps> = (props) => {
       newState.x += state.slackX
       newState.y += state.slackY
 
-      const [newStateX, newStateY] = getBoundPosition(findNode(), bounds, newState.x, newState.y)
+      const [newStateX, newStateY] = getBoundPosition(
+        domNode.current,
+        bounds,
+        newState.x,
+        newState.y
+      )
       newState.x = newStateX
       newState.y = newStateY
 

@@ -1,0 +1,65 @@
+.h1 {
+  font-size: $h1-size-mobile !important;
+}
+
+/* Set the font size to 22px */
+.h2 {
+  font-size: $h2-size-mobile !important;
+}
+
+/* Set the font size to 18px */
+.h3 {
+  font-size: $h3-size-mobile !important;
+}
+
+/* Set the font size to #{$h4-size} */
+.h4 {
+  font-size: $h4-size !important;
+}
+
+/* Set the font size to #{$h5-size} */
+.h5 { font-size: $h5-size !important; }
+
+/* Set the font size to #{$h6-size} */
+.h6 { font-size: $h6-size !important; }
+
+// Heading utilities
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 { font-weight: $font-weight-bold !important; }
+
+// Type utilities that match type sale
+/* Set the font size to 26px */
+.f1 {
+  font-size: $h1-size-mobile !important;
+}
+
+/* Set the font size to 22px */
+.f2 {
+  font-size: $h2-size-mobile !important;
+}
+
+/* Set the font size to 18px */
+.f3 {
+  font-size: $h3-size-mobile !important;
+}
+
+/* Set the font size to #{$h4-size} */
+.f4 {
+  font-size: $h4-size !important;
+}
+
+/* Set the font size to #{$h5-size} */
+.f5 { font-size: $h5-size !important; }
+/* Set the font size to #{$h6-size} */
+.f6 { font-size: $h6-size !important; }
+
+/* Set text overflow style */
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

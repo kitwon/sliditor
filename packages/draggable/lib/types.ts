@@ -28,8 +28,8 @@ export interface ControlPosition {
 }
 
 export interface OffsetPositionOfControl {
-  x?: number | string
-  y?: number | string
+  x: number | string
+  y: number | string
 }
 
 export interface ITouchEvent extends TouchEvent {

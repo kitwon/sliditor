@@ -1,0 +1,42 @@
+{
+  "name": "@merely.css/docs",
+  "private": true,
+  "description": "Docs for Merely.css",
+  "version": "0.1.0",
+  "author": "Kitwang Chen <kitwang.c@gmail.com>",
+  "dependencies": {
+    "@emotion/styled-base": "^10.0.31",
+    "@mdx-js/mdx": "^1.5.7",
+    "@mdx-js/react": "^1.5.7",
+    "gatsby": "^2.19.7",
+    "gatsby-plugin-mdx": "^1.1.3",
+    "gatsby-plugin-sass": "^2.2.1",
+    "gatsby-source-filesystem": "^2.2.2",
+    "gatsby-theme-apollo-docs": "^4.1.4",
+    "merely.css": "^0.1.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-helmet": "^5.2.1",
+    "react-live": "^2.2.2",
+    "remark-typescript": "^0.3.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.7.4",
+    "css-loader": "^3.4.2",
+    "prettier": "^1.19.1"
+  },
+  "keywords": [
+    "gatsby"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
+    "start": "npm run develop",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+  }
+}

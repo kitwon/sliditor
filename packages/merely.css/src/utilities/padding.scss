@@ -1,0 +1,25 @@
+@each $breakpoint, $variant in $responsive-variants {
+  @each $scale, $size in $spacer-map {
+    .p#{$variant}-#{$scale} { padding: $size !important };
+    // Top
+    .pt#{$variant}-#{$scale} { padding-top: $size !important };
+    // Right
+    .pr#{$variant}-#{$scale} { padding-right: $size !important };
+    // Bottom
+    .pb#{$variant}-#{$scale} { padding-bottom: $size !important };
+    // Left
+    .pl#{$variant}-#{$scale} { padding-left: $size !important };
+
+    // Set a $size padding to the left and right 
+    .px#{$variant}-#{$scale} {
+      padding-left: $size !important;
+      padding-right: $size !important;
+    }
+
+    // Set a $size padding to the top and bottom 
+    .py#{$variant}-#{$scale} {
+      padding-top: $size !important;
+      padding-bottom: $size !important;
+    }
+  }
+}

@@ -39,7 +39,6 @@ export function getBoundPosition(
     const nodeStyle = ownerWindow.getComputedStyle(node)
     const boundNodeStyle = ownerWindow.getComputedStyle(boundNode)
 
-    console.log(node.offsetLeft)
     newBounds = {
       left: -node.offsetLeft + int(boundNodeStyle.paddingLeft) + int(nodeStyle.marginLeft),
       top: -node.offsetTop + int(boundNodeStyle.paddingTop) + int(nodeStyle.marginTop),

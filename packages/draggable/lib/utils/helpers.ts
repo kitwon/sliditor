@@ -1,4 +1,4 @@
-export function find<T, K = Array<T>>(array: K, cb: (value: T, index: number) => void) {
+export function find<T>(array: Array<T>, cb: (value: T, index: number) => void) {
   if (!Array.isArray(array)) return undefined
 
   for (let i = 0, { length } = array; i < length; i += 1) {

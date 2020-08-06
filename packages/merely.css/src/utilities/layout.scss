@@ -1,0 +1,31 @@
+// Base clearfix class
+// Clear float
+.clearfix {
+  @include clearfix();
+}
+
+// Float
+@each $breakpoint, $variant in $responsive-variants {
+  @include breakpoint($breakpoint) {
+    .float#{$variant}-left { float: left !important }
+    .float#{$variant}-right { float: right !important }
+    /* no float */
+    .float#{$variant}-none { float: none !important }
+  } 
+}
+
+// Displays
+//
+@each $breakpoint, $variant in $responsive-variants {
+  @each $position in $display-map {
+    .pos#{$variant}-#{$position} {
+      display: $position !important;
+    }
+  }
+}
+
+// Width & Height
+.width-fit { max-width: 100% !important; }
+.width-full { width: 100% !important; }
+.height-fit { max-height: 100% !important; }
+.height-full { height: 100% !important; }
