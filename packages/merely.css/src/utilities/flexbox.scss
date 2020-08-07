@@ -31,10 +31,21 @@
   &-content-center { align-content: center !important; }
   &-content-baseline { align-content: baseline !important; }
   &-content-stretch { align-content: stretch !important; }
+
+  // Align self
+  &-self-start { align-self: flex-start !important; }
+  &-self-bottom { align-self: flex-end !important; }
+  &-self-center { align-self: center !important; }
+  &-self-baseline { align-self: baseline !important; }
+  &-self-stretch { align-self: stretch !important; }
   
   // Direction
   &-auto { flex: auto !important }
   &-1 { flex: 1 !important }
   &-shrink-0 { flex-shrink: 0 !important; }
   &-grow-0 { flex-grow: 0 !important; }
+
+  &-order-1 { order: 1 !important; }
+  &-order-2 { order: 2 !important; }
+  &-order-none { order: inherit !important; }
 }
