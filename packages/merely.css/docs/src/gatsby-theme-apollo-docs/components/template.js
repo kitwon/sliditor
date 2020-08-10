@@ -5,24 +5,23 @@ import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 import PageContent from 'gatsby-theme-apollo-docs/src/components/page-content';
 import PageHeader from 'gatsby-theme-apollo-docs/src/components/page-header';
 import PropTypes from 'prop-types';
-import React, {Fragment, createContext, useContext} from 'react';
+import React, { Fragment, createContext, useContext } from 'react';
 import rehypeReact from 'rehype-react';
 import styled from '@emotion/styled';
-import {ContentWrapper, colors, smallCaps} from 'gatsby-theme-apollo-core';
-import {MDXProvider} from '@mdx-js/react';
-import {TypescriptApiBoxContext} from 'gatsby-theme-apollo-docs/src/components/typescript-api-box';
-import {graphql, navigate} from 'gatsby';
+import { ContentWrapper, colors, smallCaps } from 'gatsby-theme-apollo-core';
+import { MDXProvider } from '@mdx-js/react';
+import { graphql, navigate } from 'gatsby';
 
 const StyledContentWrapper = styled(ContentWrapper)({
-  paddingBottom: 0
+  paddingBottom: 0,
 });
 
-const CustomLinkContext = createContext();
+const CustomLinkContext = createContext({});
 
 function CustomLink(props) {
-  const {pathPrefix, baseUrl} = useContext(CustomLinkContext);
+  const { pathPrefix, baseUrl } = useContext(CustomLinkContext);
 
-  const linkProps = {...props};
+  const linkProps = { ...props };
   if (props.href) {
     if (props.href.startsWith('/')) {
       linkProps.onClick = function handleClick(event) {
@@ -42,12 +41,12 @@ function CustomLink(props) {
 }
 
 CustomLink.propTypes = {
-  href: PropTypes.string
+  href: PropTypes.string,
 };
 
 const TableWrapper = styled.div({
   overflow: 'auto',
-  marginBottom: '1.45rem'
+  marginBottom: '1.45rem',
 });
 
 const tableBorder = `1px solid ${colors.divider}`;
@@ -57,28 +56,28 @@ const StyledTable = styled.table({
   borderRadius: 4,
   [['th', 'td']]: {
     padding: 16,
-    borderBottom: tableBorder
+    borderBottom: tableBorder,
   },
   'tbody tr:last-child td': {
-    border: 0
+    border: 0,
   },
   th: {
     ...smallCaps,
     fontSize: 13,
     fontWeight: 'normal',
     color: colors.text2,
-    textAlign: 'inherit'
+    textAlign: 'inherit',
   },
   td: {
     verticalAlign: 'top',
     p: {
       fontSize: 'inherit',
-      lineHeight: 'inherit'
+      lineHeight: 'inherit',
     },
     code: {
-      whiteSpace: 'normal'
-    }
-  }
+      whiteSpace: 'normal',
+    },
+  },
 });
 
 function CustomTable(props) {
@@ -92,35 +91,34 @@ function CustomTable(props) {
 const components = {
   pre: CodeBlock,
   a: CustomLink,
-  table: CustomTable
+  table: CustomTable,
 };
 
 const renderAst = new rehypeReact({
   createElement: React.createElement,
-  components
+  components,
 }).Compiler;
 
-export const CodeStringContext = createContext([])
+export const CodeStringContext = createContext([]);
 
 export default function Template(props) {
-  console.log(props)
-  const {hash, pathname} = props.location;
-  const {file, site} = props.data;
-  const {frontmatter, headings, fields} =
+  console.log(props);
+  const { hash, pathname } = props.location;
+  const { file, site } = props.data;
+  const { frontmatter, headings, fields } =
     file.childMarkdownRemark || file.childMdx;
-  const {title, description} = site.siteMetadata;
+  const { title, description } = site.siteMetadata;
   const {
     sidebarContents,
     githubUrl,
     spectrumUrl,
-    typescriptApiBox,
     twitterHandle,
-    baseUrl
+    baseUrl,
   } = props.pageContext;
 
   const pages = sidebarContents
-    .reduce((acc, {pages}) => acc.concat(pages), [])
-    .filter(page => !page.anchor);
+    .reduce((acc, { pages }) => acc.concat(pages), [])
+    .filter((page) => !page.anchor);
 
   return (
     <Fragment>
@@ -148,17 +146,13 @@ export default function Template(props) {
           <CustomLinkContext.Provider
             value={{
               pathPrefix: site.pathPrefix,
-              baseUrl
+              baseUrl,
             }}
           >
             {file.childMdx ? (
-              <TypescriptApiBoxContext.Provider value={typescriptApiBox}>
-                <CodeStringContext.Provider value={file.childMdx.mdxAST.children}>
-                  <MDXProvider components={components}>
-                    <MDXRenderer>{file.childMdx.body}</MDXRenderer>
-                  </MDXProvider>
-              </CodeStringContext.Provider>
-              </TypescriptApiBoxContext.Provider>
+              <MDXProvider components={components}>
+                <MDXRenderer>{file.childMdx.body}</MDXRenderer>
+              </MDXProvider>
             ) : (
               renderAst(file.childMarkdownRemark.htmlAst)
             )}
@@ -173,7 +167,7 @@ export default function Template(props) {
 Template.propTypes = {
   data: PropTypes.object.isRequired,
   pageContext: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired
+  location: PropTypes.object.isRequired,
 };
 
 export const pageQuery = graphql`
@@ -185,7 +179,7 @@ export const pageQuery = graphql`
         description
       }
     }
-    file(id: {eq: $id}) {
+    file(id: { eq: $id }) {
       childMarkdownRemark {
         frontmatter {
           title

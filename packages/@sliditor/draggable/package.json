@@ -11,7 +11,8 @@
   "author": "kitwang <kitwang.c@gmail.com>",
   "homepage": "",
   "license": "MIT",
-  "main": "lib/draggable.js",
+  "main": "lib/index.ts",
+  "types": "lib/index.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
