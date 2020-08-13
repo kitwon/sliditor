@@ -1,16 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 import { ThemeProvider } from 'emotion-theming'
+import createStore from './store'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { theme } from './assets/styles'
 
 import 'merely.css'
 
+const store = createStore()
+
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')

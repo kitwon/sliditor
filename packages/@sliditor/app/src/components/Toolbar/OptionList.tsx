@@ -1,11 +1,13 @@
-import React, { FC, MouseEvent } from 'react'
+import React, { FC } from 'react'
 import { DragCore, DraggableEventHandler, DraggableData } from '@sliditor/draggable'
 import { TOOLBAR_ADD_OPTIONS } from './constants'
 import styled from '../../assets/styles'
 
+export type OptionEvent = (type: string, coreData: DraggableData, e: MouseEvent) => any
+
 export interface OptionProps {
-  onDrag?: (type: string, coreData?: DraggableData) => any
-  onAdd?: (e: MouseEvent, type: string) => any
+  onDrag?: OptionEvent
+  onAdd?: (e: React.MouseEvent, type: string) => any
 }
 
 const AddOption = styled.div`
@@ -23,7 +25,7 @@ const OptionList: FC<OptionProps> = (props) => {
   const { onDrag, onAdd } = props
   const handleDrag = (type: string) => {
     const drag: DraggableEventHandler = (e, coreData) => {
-      if (onDrag) return onDrag(type, coreData)
+      if (onDrag) return onDrag(type, coreData, e)
       return true
     }
 
