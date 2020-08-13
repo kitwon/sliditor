@@ -1,6 +1,12 @@
 // ----------- Theme Color ------------
-$primary:               #F2302F !default;
-$primary-100:           #FFF2F2 !default;
+$primary:               #4186fa !default;
+
+// Text
+$text-black:        $black !default;
+$text-white:        $white !default;
+$text-gray-dark:    $gray-900 !default;
+$text-gray-light:   $gray-400 !default;
+$text-gray:         $gray-600 !default;
 
 // ----------- Info Color -------------
 $danger:                  $red-400 !default;

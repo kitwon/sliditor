@@ -1,12 +1,4 @@
-import {
-  FC,
-  cloneElement,
-  ReactElement,
-  useRef,
-  useEffect,
-  forwardRef,
-  MutableRefObject
-} from 'react'
+import { FC, cloneElement, ReactElement, useRef, useEffect, MutableRefObject } from 'react'
 import {
   matchSelectorAndParent,
   getTouchIdentifier,
@@ -39,6 +31,7 @@ export interface DragCoreProps {
   enableUserSelect?: boolean
   scale?: number
   grid?: [number, number]
+  domRef?: (instance: MutableRefObject<HTMLElement>) => any
   onMousedown?: (e: MouseEvent) => void
   /**
    * Emit when draggable start, if return `false`,
@@ -69,7 +62,7 @@ const events = {
 
 let dragEvent = events.mouse
 
-const DragCore = forwardRef<HTMLElement, DragCoreProps>((props, ref) => {
+const DragCore: FC<DragCoreProps> = (props) => {
   const {
     children,
     allowAnyClick,
@@ -77,6 +70,7 @@ const DragCore = forwardRef<HTMLElement, DragCoreProps>((props, ref) => {
     handle,
     cancel,
     grid,
+    domRef,
     scale = 1,
     enableUserSelect = true,
     onStart = () => 0,
@@ -92,7 +86,8 @@ const DragCore = forwardRef<HTMLElement, DragCoreProps>((props, ref) => {
   })
 
   // ref never use as function
-  const domNode = ref as MutableRefObject<HTMLElement>
+  // const domNode = ref as MutableRefObject<HTMLElement>
+  const domNode = useRef<HTMLElement>(null)
 
   const handleDragStop = (e: MouseTouchEvent) => {
     const state = stateRef.current
@@ -229,6 +224,7 @@ const DragCore = forwardRef<HTMLElement, DragCoreProps>((props, ref) => {
 
   useEffect(() => {
     if (domNode) {
+      if (isFunction(domRef)) domRef(domNode)
       addEvent(domNode.current, events.touch.start, onTouchStart, { passive: false })
     }
 
@@ -246,11 +242,11 @@ const DragCore = forwardRef<HTMLElement, DragCoreProps>((props, ref) => {
   }, [domNode])
 
   return cloneElement(children, {
-    ref,
+    ref: domNode,
     onMouseDown,
     onMouseUp,
     onTouchEnd
   })
-})
+}
 
 export default DragCore

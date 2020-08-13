@@ -2,6 +2,10 @@
   "name": "sliditor",
   "version": "0.0.0",
   "description": "Slides visual editor.",
+  "workspaces": [
+    "packages/*",
+    "packages/@sliditor/*"
+  ],
   "main": "index.js",
   "author": "kitwang",
   "license": "MIT",

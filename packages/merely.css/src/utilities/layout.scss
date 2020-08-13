@@ -11,7 +11,7 @@
     .float#{$variant}-right { float: right !important }
     /* no float */
     .float#{$variant}-none { float: none !important }
-  } 
+  }
 }
 
 // Displays
@@ -22,6 +22,13 @@
       display: $position !important;
     }
   }
+}
+
+// Overflow utilities
+@each $overflow in (visible, hidden, auto, scroll) {
+  .overflow-#{$overflow} { overflow: $overflow !important; }
+  .overflow-x-#{$overflow} { overflow: $overflow !important; }
+  .overflow-y-#{$overflow} { overflow: $overflow !important; }
 }
 
 // Width & Height

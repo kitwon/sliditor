@@ -1,0 +1,12 @@
+@import "~merely.css/src/support/index.scss";
+
+body {
+  background: $gray-800;
+}
+// Page
+.page-wrapper {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  bottom: 0;
+}

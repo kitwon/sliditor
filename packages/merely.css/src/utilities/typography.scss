@@ -57,9 +57,20 @@
 /* Set the font size to #{$h6-size} */
 .f6 { font-size: $h6-size !important; }
 
+.text-emphasized {
+  font-weight: $font-weight-bold;
+  color: $text-gray-dark;
+}
+
 /* Set text overflow style */
 .text-ellipsis {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+// Text Colors
+.text-white { color: $text-white }
+.text-light { color: $text-gray }
+.text-lightest { color: $text-gray-light }
+.text-dark { color: $text-gray-dark }

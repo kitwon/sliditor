@@ -1,8 +1,9 @@
 {
   "npmClient": "yarn",
+  "useWorkspaces": true,
+  "version": "independent",
   "packages": [
     "packages/*",
     "packages/@sliditor/*"
-  ],
-  "version": "independent"
+  ]
 }

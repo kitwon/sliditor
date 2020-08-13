@@ -1,4 +1,6 @@
 import Draggable from './Draggable'
 
-export * from './DragCore'
+export { default as DragCore } from './DragCore'
+export * from './types'
+
 export default Draggable

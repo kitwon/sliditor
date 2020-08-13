@@ -38,6 +38,6 @@ export function canDragY(axis) {
 export function log(...args) {
   if (process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line
-    // console.log(...args)
+    console.log(...args)
   }
 }

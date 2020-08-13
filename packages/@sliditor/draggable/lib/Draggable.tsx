@@ -73,7 +73,9 @@ const Draggable: FC<DraggableProps> = (props) => {
     onStart,
     onDrag
   } = props
+
   const domNode = useRef<HTMLElement>(null)
+
   const [stateRef, setState, refState] = useReferenceState({
     dragging: false,
     dragged: false,
@@ -216,7 +218,9 @@ const Draggable: FC<DraggableProps> = (props) => {
   return (
     <DragCore
       {...{ ...props, onStart: handleDragStart, onDrag: handleDrag, onStop: handleDragStop }}
-      ref={domNode}
+      domRef={(instace) => {
+        domNode.current = instace.current
+      }}
     >
       {cloneElement(children, {
         ...childProps

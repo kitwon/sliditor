@@ -9,16 +9,17 @@ $display-map: (
 
 // Spacing variables
 //
-$spacer: 8px !default;
+$spacer: 6px !default;
 
 // Spacing scale
 $spacer-0: 0 !default;                  // 0
-$spacer-1: round($spacer / 2) !default; // 4px
-$spacer-2: $spacer !default;            // 8px
-$spacer-3: $spacer * 2 !default;        // 16px
-$spacer-4: $spacer * 3 !default;        // 24px
-$spacer-5: $spacer * 4 !default;        // 32px
-$spacer-6: $spacer * 5 !default;        // 40px
+$spacer-1: round($spacer / 2) !default; // 3px
+$spacer-2: $spacer !default;            // 6px
+$spacer-3: $spacer * 2 !default;        // 12px
+$spacer-4: $spacer * 3 !default;        // 18px
+$spacer-5: $spacer * 4 !default;        // 24px
+$spacer-6: $spacer * 5 !default;        // 30px
+$spacer-7: $spacer * 6 !default;        // 36px
 
 // The list of spacer values
 $spacers: (
@@ -29,6 +30,7 @@ $spacers: (
   $spacer-4,
   $spacer-5,
   $spacer-6,
+  $spacer-7,
 ) !default;
 
 // Map of spacers, for easier looping:
@@ -41,6 +43,7 @@ $spacer-map: (
   4: $spacer-4,
   5: $spacer-5,
   6: $spacer-6,
+  7: $spacer-7,
 ) !default;
 
 // container variables
