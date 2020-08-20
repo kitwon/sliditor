@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, cloneElement, useState } from 'react';
+import React, { useRef, useCallback, useEffect, cloneElement, useState } from 'react';
 import classNames from 'classnames';
 
 function _defineProperty(obj, key, value) {
@@ -531,8 +531,7 @@ var DragCore = function DragCore(props) {
   // const domNode = ref as MutableRefObject<HTMLElement>
 
   var domNode = useRef(null);
-
-  var handleDragStop = function handleDragStop(e) {
+  var handleDragStop = useCallback(function (e) {
     var state = stateRef.current;
     if (!state.dragging) return;
     var position = getContnrolPosition(e, domNode, state.touchIndentifier, scale);
@@ -559,9 +558,8 @@ var DragCore = function DragCore(props) {
       removeEvent(domNode.current.ownerDocument, dragEvent.move, handleDrag);
       removeEvent(domNode.current.ownerDocument, dragEvent.stop, handleDragStop);
     }
-  };
-
-  var handleDrag = function handleDrag(e) {
+  }, [domNode]);
+  var handleDrag = useCallback(function (e) {
     var state = stateRef.current;
     var position = getContnrolPosition(e, domNode, state.touchIndentifier, scale);
     if (position === null) return;
@@ -597,14 +595,13 @@ var DragCore = function DragCore(props) {
       lastX: x,
       lastY: y
     });
-  };
+  }, [domNode]);
   /**
    * Handle staring
    * @param { MouseTouchEvent } e Event
    */
 
-
-  var handleDragStart = function handleDragStart(e) {
+  var handleDragStart = useCallback(function (e) {
     var state = stateRef.current;
     if (onMousedown) onMousedown(e); // Only accept left click from mouse
 
@@ -643,28 +640,23 @@ var DragCore = function DragCore(props) {
     });
     addEvent(ownerDocument, dragEvent.move, handleDrag);
     addEvent(ownerDocument, dragEvent.stop, handleDragStop);
-  };
-
-  var onMouseDown = function onMouseDown(e) {
+  }, [domNode]);
+  var onMouseDown = useCallback(function (e) {
     dragEvent = events.mouse;
     return handleDragStart(e);
-  };
-
-  var onMouseUp = function onMouseUp(e) {
+  }, []);
+  var onMouseUp = useCallback(function (e) {
     dragEvent = events.mouse;
     return handleDragStop(e);
-  };
-
-  var onTouchStart = function onTouchStart(e) {
+  }, []);
+  var onTouchStart = useCallback(function (e) {
     dragEvent = events.touch;
     return handleDragStart(e);
-  };
-
-  var onTouchEnd = function onTouchEnd(e) {
+  }, []);
+  var onTouchEnd = useCallback(function (e) {
     dragEvent = events.touch;
     return handleDragStop(e);
-  };
-
+  }, []);
   useEffect(function () {
     if (domNode) {
       if (isFunction(domRef)) domRef(domNode);
@@ -715,7 +707,6 @@ var Draggable = function Draggable(props) {
   var _position$x, _position$y;
 
   var children = props.children,
-      style = props.style,
       className = props.className,
       draggedClassName = props.draggedClassName,
       draggingClassName = props.draggingClassName,
@@ -752,7 +743,7 @@ var Draggable = function Draggable(props) {
       refState = _useReferenceState2[2];
 
   var _useState = useState({
-    style: {},
+    style: _objectSpread2({}, children.props.style),
     className: '',
     transform: ''
   }),
@@ -790,7 +781,7 @@ var Draggable = function Draggable(props) {
 
     var classnames = classNames(className || '', children.props.className || '', (_classNames = {}, _defineProperty(_classNames, draggedClassName, state.dragged), _defineProperty(_classNames, draggingClassName, state.dragging), _classNames));
     setChildProps({
-      style: _objectSpread2(_objectSpread2({}, style), cssTransform),
+      style: _objectSpread2(_objectSpread2({}, childProps.style), cssTransform),
       className: classnames,
       transform: svgTransform
     });
@@ -806,7 +797,7 @@ var Draggable = function Draggable(props) {
     }
   }, [position]); // Actions
 
-  var handleDragStart = function handleDragStart(e, coreData) {
+  var handleDragStart = useCallback(function (e, coreData) {
     var state = stateRef.current;
     log('Draggable: handleDragStart: %j', coreData);
     var sholdStart = onStart && onStart(e, createDraggableData({
@@ -821,9 +812,8 @@ var Draggable = function Draggable(props) {
       dragged: true
     }));
     return undefined;
-  };
-
-  var handleDrag = function handleDrag(e, coreData) {
+  }, [stateRef]);
+  var handleDrag = useCallback(function (e, coreData) {
     var state = stateRef.current;
     if (!state.dragging) return undefined;
     log('Draggable: handleDrag: %j', coreData);
@@ -863,9 +853,8 @@ var Draggable = function Draggable(props) {
     if (shouldUpdate === false) return false;
     setState(_objectSpread2(_objectSpread2({}, state), newState));
     return undefined;
-  };
-
-  var handleDragStop = function handleDragStop(e, coreData) {
+  }, [stateRef]);
+  var handleDragStop = useCallback(function (e, coreData) {
     var state = stateRef.current;
     if (!state.dragging) return undefined;
     var shouldContinune = onStop && onStop(e, coreData);
@@ -878,8 +867,7 @@ var Draggable = function Draggable(props) {
     };
     setState(_objectSpread2(_objectSpread2({}, state), newState));
     return undefined;
-  };
-
+  }, [stateRef]);
   return /*#__PURE__*/React.createElement(DragCore, _extends({}, _objectSpread2(_objectSpread2({}, props), {}, {
     onStart: handleDragStart,
     onDrag: handleDrag,

@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useCallback } from 'react'
 import { DragCore, DraggableEventHandler, DraggableData } from '@sliditor/draggable'
 import { TOOLBAR_ADD_OPTIONS } from './constants'
 import styled from '../../assets/styles'
@@ -7,7 +7,8 @@ export type OptionEvent = (type: string, coreData: DraggableData, e: MouseEvent)
 
 export interface OptionProps {
   onDrag?: OptionEvent
-  onAdd?: (e: React.MouseEvent, type: string) => any
+  onDragStart?: OptionEvent
+  onDragEnd?: OptionEvent
 }
 
 const AddOption = styled.div`
@@ -22,22 +23,29 @@ const AddOption = styled.div`
 `
 
 const OptionList: FC<OptionProps> = (props) => {
-  const { onDrag, onAdd } = props
-  const handleDrag = (type: string) => {
-    const drag: DraggableEventHandler = (e, coreData) => {
-      if (onDrag) return onDrag(type, coreData, e)
-      return true
-    }
+  const { onDrag, onDragStart, onDragEnd } = props
+  const handleDrag = useCallback(
+    (type: string, event?: OptionEvent) => {
+      const drag: DraggableEventHandler = (e, coreData) => {
+        if (event) return event(type, coreData, e)
+        return true
+      }
 
-    return drag
-  }
+      return drag
+    },
+    [onDrag]
+  )
 
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
       {TOOLBAR_ADD_OPTIONS.map((i) => (
-        <div style={{ position: 'relative' }} key={i.name}>
-          <DragCore onDrag={handleDrag(i.type)}>
-            <AddOption onClick={(e) => onAdd && onAdd(e, i.type)}>{i.name}</AddOption>
+        <div key={i.name}>
+          <DragCore
+            onDrag={handleDrag(i.type, onDrag)}
+            onStart={handleDrag(i.type, onDragStart)}
+            onStop={handleDrag(i.type, onDragEnd)}
+          >
+            <AddOption>{i.name}</AddOption>
           </DragCore>
         </div>
       ))}

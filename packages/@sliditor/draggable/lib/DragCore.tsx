@@ -1,4 +1,12 @@
-import { FC, cloneElement, ReactElement, useRef, useEffect, MutableRefObject } from 'react'
+import {
+  FC,
+  cloneElement,
+  ReactElement,
+  useRef,
+  useEffect,
+  MutableRefObject,
+  useCallback
+} from 'react'
 import {
   matchSelectorAndParent,
   getTouchIdentifier,
@@ -89,138 +97,147 @@ const DragCore: FC<DragCoreProps> = (props) => {
   // const domNode = ref as MutableRefObject<HTMLElement>
   const domNode = useRef<HTMLElement>(null)
 
-  const handleDragStop = (e: MouseTouchEvent) => {
-    const state = stateRef.current
-    if (!state.dragging) return
+  const handleDragStop = useCallback(
+    (e: MouseTouchEvent) => {
+      const state = stateRef.current
+      if (!state.dragging) return
 
-    const position = getContnrolPosition(e, domNode, state.touchIndentifier, scale)
-    if (position === null) return
-    const { x, y } = position
-    const coreEvent = createCoreData(domNode, state, x, y)
+      const position = getContnrolPosition(e, domNode, state.touchIndentifier, scale)
+      if (position === null) return
+      const { x, y } = position
+      const coreEvent = createCoreData(domNode, state, x, y)
 
-    const shouldContinune = onStop(e, coreEvent)
-    if (shouldContinune === false) return
+      const shouldContinune = onStop(e, coreEvent)
+      if (shouldContinune === false) return
 
-    if (domNode.current && enableUserSelect) {
-      removeUserSelectStyle(domNode.current.ownerDocument)
-    }
+      if (domNode.current && enableUserSelect) {
+        removeUserSelectStyle(domNode.current.ownerDocument)
+      }
 
-    log('DragCore - handleStop: %j', coreEvent)
+      log('DragCore - handleStop: %j', coreEvent)
 
-    stateRef.current = { ...state, dragging: false, lastX: NaN, lastY: NaN }
+      stateRef.current = { ...state, dragging: false, lastX: NaN, lastY: NaN }
 
-    if (domNode) {
-      // eslint-disable-next-line no-use-before-define
-      removeEvent(domNode.current.ownerDocument, dragEvent.move, handleDrag)
-      removeEvent(domNode.current.ownerDocument, dragEvent.stop, handleDragStop)
-    }
-  }
+      if (domNode) {
+        // eslint-disable-next-line no-use-before-define
+        removeEvent(domNode.current.ownerDocument, dragEvent.move, handleDrag)
+        removeEvent(domNode.current.ownerDocument, dragEvent.stop, handleDragStop)
+      }
+    },
+    [domNode]
+  )
 
-  const handleDrag = (e: MouseTouchEvent) => {
-    const state = stateRef.current
-    const position = getContnrolPosition(e, domNode, state.touchIndentifier, scale)
+  const handleDrag = useCallback(
+    (e: MouseTouchEvent) => {
+      const state = stateRef.current
+      const position = getContnrolPosition(e, domNode, state.touchIndentifier, scale)
 
-    if (position === null) return
-    let { x, y } = position
-    if (Array.isArray(grid)) {
-      const [deltaX, deltaY] = snapToGrid(grid, x - state.lastX, y - state.lastY)
-      if (!deltaX && !deltaY) return
-      x = state.lastX + deltaX
-      y = state.lastY + deltaY
-    }
+      if (position === null) return
+      let { x, y } = position
+      if (Array.isArray(grid)) {
+        const [deltaX, deltaY] = snapToGrid(grid, x - state.lastX, y - state.lastY)
+        if (!deltaX && !deltaY) return
+        x = state.lastX + deltaX
+        y = state.lastY + deltaY
+      }
 
-    const coreEvent = createCoreData(domNode, state, x, y)
-    log('DragCore - handleDrag: %j', coreEvent)
+      const coreEvent = createCoreData(domNode, state, x, y)
+      log('DragCore - handleDrag: %j', coreEvent)
 
-    // Manually emit the stop event
-    const shouldUpdate = onDrag(e, coreEvent)
-    if (shouldUpdate === false) {
-      // TODO:
-      // Old browser support
-      // @ts-ignore
-      handleDragStop(new MouseEvent('mouseup'))
-      return
-    }
+      // Manually emit the stop event
+      const shouldUpdate = onDrag(e, coreEvent)
+      if (shouldUpdate === false) {
+        // TODO:
+        // Old browser support
+        // @ts-ignore
+        handleDragStop(new MouseEvent('mouseup'))
+        return
+      }
 
-    stateRef.current = { ...state, dragging: true, lastX: x, lastY: y }
-  }
+      stateRef.current = { ...state, dragging: true, lastX: x, lastY: y }
+    },
+    [domNode]
+  )
 
   /**
    * Handle staring
    * @param { MouseTouchEvent } e Event
    */
-  const handleDragStart = (e: MouseTouchEvent) => {
-    const state = stateRef.current
-    if (onMousedown) onMousedown(e)
+  const handleDragStart = useCallback(
+    (e: MouseTouchEvent) => {
+      const state = stateRef.current
+      if (onMousedown) onMousedown(e)
 
-    // Only accept left click from mouse
-    if (!allowAnyClick && e.button !== 0) return
+      // Only accept left click from mouse
+      if (!allowAnyClick && e.button !== 0) return
 
-    const node = domNode.current
-    if (!node || !node.ownerDocument || !node.ownerDocument.body) {
-      throw new Error('Draggable not mounted on DragStart')
-    }
-    const { ownerDocument } = node
+      const node = domNode.current
+      if (!node || !node.ownerDocument || !node.ownerDocument.body) {
+        throw new Error('Draggable not mounted on DragStart')
+      }
+      const { ownerDocument } = node
 
-    // Handle cancel \ handle \ disable prop.
-    if (
-      disable ||
-      !(e.target instanceof ownerDocument.defaultView.Node) ||
-      (handle && !matchSelectorAndParent(e.target, handle, node)) ||
-      (cancel && matchSelectorAndParent(e.target, cancel, node))
-    ) {
-      return
-    }
+      // Handle cancel \ handle \ disable prop.
+      if (
+        disable ||
+        !(e.target instanceof ownerDocument.defaultView.Node) ||
+        (handle && !matchSelectorAndParent(e.target, handle, node)) ||
+        (cancel && matchSelectorAndParent(e.target, cancel, node))
+      ) {
+        return
+      }
 
-    // Prevent scrolling on mobile device.
-    if (e.type === 'touchstart') e.preventDefault()
+      // Prevent scrolling on mobile device.
+      if (e.type === 'touchstart') e.preventDefault()
 
-    const touchIndentifier = getTouchIdentifier(e)
-    stateRef.current = { ...state, touchIndentifier }
+      const touchIndentifier = getTouchIdentifier(e)
+      stateRef.current = { ...state, touchIndentifier }
 
-    const position = getContnrolPosition(e, domNode, touchIndentifier, scale)
-    if (position === null) return
-    const { x, y } = position
+      const position = getContnrolPosition(e, domNode, touchIndentifier, scale)
+      if (position === null) return
+      const { x, y } = position
 
-    const coreEvent = createCoreData(domNode, state, x, y)
+      const coreEvent = createCoreData(domNode, state, x, y)
 
-    log('DragCore - handleDragStart: %j', coreEvent)
+      log('DragCore - handleDragStart: %j', coreEvent)
 
-    const shouldUpdate = onStart(e, coreEvent)
-    if (shouldUpdate === false) return
+      const shouldUpdate = onStart(e, coreEvent)
+      if (shouldUpdate === false) return
 
-    if (enableUserSelect) addUserSelectStyles(ownerDocument)
+      if (enableUserSelect) addUserSelectStyles(ownerDocument)
 
-    stateRef.current = {
-      ...state,
-      dragging: true,
-      lastX: x,
-      lastY: y
-    }
+      stateRef.current = {
+        ...state,
+        dragging: true,
+        lastX: x,
+        lastY: y
+      }
 
-    addEvent(ownerDocument, dragEvent.move, handleDrag)
-    addEvent(ownerDocument, dragEvent.stop, handleDragStop)
-  }
+      addEvent(ownerDocument, dragEvent.move, handleDrag)
+      addEvent(ownerDocument, dragEvent.stop, handleDragStop)
+    },
+    [domNode]
+  )
 
-  const onMouseDown = (e: MouseTouchEvent) => {
+  const onMouseDown = useCallback((e: MouseTouchEvent) => {
     dragEvent = events.mouse
     return handleDragStart(e)
-  }
+  }, [])
 
-  const onMouseUp = (e: MouseTouchEvent) => {
+  const onMouseUp = useCallback((e: MouseTouchEvent) => {
     dragEvent = events.mouse
     return handleDragStop(e)
-  }
+  }, [])
 
-  const onTouchStart = (e: MouseTouchEvent) => {
+  const onTouchStart = useCallback((e: MouseTouchEvent) => {
     dragEvent = events.touch
     return handleDragStart(e)
-  }
+  }, [])
 
-  const onTouchEnd = (e: MouseTouchEvent) => {
+  const onTouchEnd = useCallback((e: MouseTouchEvent) => {
     dragEvent = events.touch
     return handleDragStop(e)
-  }
+  }, [])
 
   useEffect(() => {
     if (domNode) {

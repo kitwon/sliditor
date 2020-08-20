@@ -16,12 +16,11 @@ interface Props extends OptionProps {
 }
 
 const Toolbar: FC<Props> = (props) => {
-  const { onDrag } = props
-
   return (
     <Toolbars>
       <div className="p-3">
-        <OptionList onDrag={onDrag} />
+        {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+        <OptionList {...props} />
       </div>
     </Toolbars>
   )
