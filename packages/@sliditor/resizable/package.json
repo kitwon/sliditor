@@ -1,0 +1,60 @@
+{
+  "name": "@sliditor/resizable",
+  "version": "0.0.1",
+  "description": "Component and hook make element draggable.",
+  "keywords": [
+    "react",
+    "drag",
+    "drop",
+    "hook"
+  ],
+  "author": "kitwang <kitwang.c@gmail.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "dist/draggable.umd.js",
+  "module": "dist/draggable.esm.js",
+  "types": "lib/index.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "storybook": "start-storybook -p 6006",
+    "build": "rollup -c rollup.config.js",
+    "build-storybook": "build-storybook"
+  },
+  "dependencies": {
+    "@sliditor/draggable": "^0.0.1",
+    "classnames": "^2.2.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-react": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@rollup/plugin-babel": "^5.1.0",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@storybook/addon-actions": "^5.3.19",
+    "@storybook/addon-links": "^5.3.19",
+    "@storybook/addons": "^5.3.19",
+    "@storybook/react": "^5.3.19",
+    "@types/react": "^16.9.43",
+    "babel-loader": "^8.1.0",
+    "rollup": "^2.23.1",
+    "rollup-plugin-terser": "^7.0.0",
+    "sass": "^1.26.10",
+    "sass-loader": "^9.0.2"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1"
+  }
+}

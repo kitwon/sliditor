@@ -24,17 +24,14 @@ const AddOption = styled.div`
 
 const OptionList: FC<OptionProps> = (props) => {
   const { onDrag, onDragStart, onDragEnd } = props
-  const handleDrag = useCallback(
-    (type: string, event?: OptionEvent) => {
-      const drag: DraggableEventHandler = (e, coreData) => {
-        if (event) return event(type, coreData, e)
-        return true
-      }
+  const handleDrag = useCallback((type: string, event?: OptionEvent) => {
+    const drag: DraggableEventHandler = (e, coreData) => {
+      if (event) return event(type, coreData, e)
+      return true
+    }
 
-      return drag
-    },
-    [onDrag]
-  )
+    return drag
+  }, [])
 
   return (
     <div style={{ position: 'relative' }}>

@@ -5,7 +5,8 @@ import {
   useRef,
   useEffect,
   MutableRefObject,
-  useCallback
+  useCallback,
+  SyntheticEvent
 } from 'react'
 import {
   matchSelectorAndParent,
@@ -40,18 +41,18 @@ export interface DragCoreProps {
   scale?: number
   grid?: [number, number]
   domRef?: (instance: MutableRefObject<HTMLElement>) => any
-  onMousedown?: (e: MouseEvent) => void
+  onMousedown?: (e: SyntheticEvent) => void
   /**
    * Emit when draggable start, if return `false`,
    * Draggable will stop.
    */
-  onStart?: (e: MouseEvent, core: DraggableData) => boolean | void
+  onStart?: (e: SyntheticEvent, core: DraggableData) => boolean | void
   /**
    * Emit when dragging, if return `false`,
    * Draggable will stop.
    */
-  onDrag?: (e: MouseEvent, core: DraggableData) => boolean | void
-  onStop?: (e: MouseEvent, core: DraggableData) => boolean | void
+  onDrag?: (e: SyntheticEvent, core: DraggableData) => boolean | void
+  onStop?: (e: SyntheticEvent, core: DraggableData) => boolean | void
   children: ReactElement
 }
 

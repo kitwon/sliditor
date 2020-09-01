@@ -1,5 +1,5 @@
 import { useReducer, Reducer, useCallback } from 'react'
-import { Block, BlockProps } from '../types/block'
+import { Block, BlockProps } from '../models/block'
 import * as types from './types'
 
 interface SlidesState {
@@ -44,15 +44,15 @@ export default function useBlocks() {
     ...initialState
   })
 
-  const updateBlock = (id: string, block: Block) =>
+  const update = (id: string, block: Block) =>
     dispatch({ type: types.UPDATE_BLOCK, id, payload: block })
 
-  const selectBlock = useCallback((id: string) => dispatch({ type: types.SELECT_BLOCK, id }), [])
+  const select = useCallback((id: string) => dispatch({ type: types.SELECT_BLOCK, id }), [])
 
-  const addBlock = (type: string, blockProps?: Partial<BlockProps>) => {
+  const add = (type: string, blockProps?: Partial<BlockProps>) => {
     const id = `${state.currentPage}.${blockId}`
     const block = new Block({ id, type, ...blockProps })
-    updateBlock(id, block)
+    update(id, block)
     blockId += 1
   }
 
@@ -63,5 +63,5 @@ export default function useBlocks() {
     return pageBlocks[currentBlock]
   }, [state.currentBlock])
 
-  return { state, updateBlock, addBlock, selectBlock, getCurrentBlock }
+  return { state, update, add, select, getCurrentBlock }
 }

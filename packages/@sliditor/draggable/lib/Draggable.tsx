@@ -15,7 +15,8 @@ import {
   ControlPosition,
   DraggableEventHandler,
   BoundsShape,
-  OffsetPositionOfControl
+  OffsetPositionOfControl,
+  Axis
 } from './types'
 import { log, canDragX, canDragY } from './utils/helpers'
 import { createDraggableData, getBoundPosition } from './utils/positions'
@@ -27,7 +28,7 @@ export interface DraggableProps extends DragCoreProps {
    * `axis` determines which axis the draggable can move.
    * default 'both'
    */
-  axis?: 'both' | 'x' | 'y'
+  axis?: Axis
 
   className?: string
   draggingClassName?: string

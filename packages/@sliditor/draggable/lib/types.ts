@@ -1,3 +1,7 @@
+import { SyntheticEvent } from 'react'
+
+export type Axis = 'x' | 'y' | 'both' | 'none'
+
 export interface DraggableState {
   dragging: boolean
   lastX: number
@@ -39,4 +43,4 @@ export interface ITouchEvent extends TouchEvent {
 
 export type DraggableEventHandler = (e: MouseEvent, data: DraggableData) => void | boolean
 
-export type MouseTouchEvent = MouseEvent & ITouchEvent
+export type MouseTouchEvent = MouseEvent & ITouchEvent & SyntheticEvent

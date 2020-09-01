@@ -53,6 +53,7 @@
     "webpack-chain": "^6.0.0"
   },
   "dependencies": {
+    "@sliditor/draggable": "^0.0.1",
     "normalize.css": "^8.0.1"
   }
 }

@@ -1,4 +1,4 @@
-import { Block } from '../types/block'
+import { Block } from '../models/block'
 
 export interface Action<T> {
   type: T

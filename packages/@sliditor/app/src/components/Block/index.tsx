@@ -1,14 +1,14 @@
 import React, { FC, useState, useEffect } from 'react'
 import Draggable from '@sliditor/draggable'
-import { Block } from '../../types/block'
+import { Block } from '../../models/block'
 import styled from '../../assets/styles'
 
 interface BlockProps {
   block: Block
 }
 
-const BlockWrap = styled.div`
-  display: inline-block;
+const BlockWrap = styled.div<Partial<BlockProps>>`
+  display: ${({ block }) => (block?.visible ? 'inline-block' : 'none')};
   position: absolute;
   cursor: pointer;
   font-size: 20px;
@@ -18,7 +18,6 @@ const BlockWrap = styled.div`
 
 const BlockContainer: FC<BlockProps> = (props) => {
   const { block } = props
-
   const [pos, setPos] = useState(block.position)
 
   useEffect(() => {
@@ -27,7 +26,7 @@ const BlockContainer: FC<BlockProps> = (props) => {
 
   return (
     <Draggable position={pos} onDrag={(e, coreData) => setPos({ x: coreData.x, y: coreData.y })}>
-      <BlockWrap>{block.content}</BlockWrap>
+      <BlockWrap block={block}>{block.content}</BlockWrap>
     </Draggable>
   )
 }
