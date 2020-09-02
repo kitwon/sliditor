@@ -1,6 +1,6 @@
 {
   "name": "merely.css",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Highly resuable, flexible styles",
   "keywords": [
     "sass"
@@ -53,7 +53,7 @@
     "webpack-chain": "^6.0.0"
   },
   "dependencies": {
-    "@sliditor/draggable": "^0.0.1",
+    "@sliditor/draggable": "^0.1.0",
     "normalize.css": "^8.0.1"
   }
 }
