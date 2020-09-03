@@ -11,11 +11,18 @@ interface SizeState {
 }
 
 const Resizable: FC<ResizeProps> = (props) => {
-  const [state, setState] = useState<SizeState | null>(null)
+  const { width, height } = props
+  const [state, setState] = useState<SizeState>({
+    width,
+    height,
+    propsWidth: width,
+    propsHeight: height
+  })
 
   const { style, onResize, children, ...resizeProps } = props
 
   const handleResize: ResizeEvent = (e, data) => {
+    console.log(data)
     const { size } = data
     if (onResize) {
       // eslint-disable-next-line no-unused-expressions
@@ -26,10 +33,14 @@ const Resizable: FC<ResizeProps> = (props) => {
     }
   }
 
+  useEffect(() => {
+    console.log(state)
+  }, [state])
+
   return (
     <ResizeCore {...resizeProps} onResize={handleResize} width={state.height} height={state.height}>
       <div style={{ ...style, width: `${state.width}px`, height: `${state.height}px` }}>
-        {children}
+        {[children]}
       </div>
     </ResizeCore>
   )

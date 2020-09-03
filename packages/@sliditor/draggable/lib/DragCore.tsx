@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import {
   FC,
   cloneElement,
@@ -98,36 +99,6 @@ const DragCore: FC<DragCoreProps> = (props) => {
   // const domNode = ref as MutableRefObject<HTMLElement>
   const domNode = useRef<HTMLElement>(null)
 
-  const handleDragStop = useCallback(
-    (e: MouseTouchEvent) => {
-      const state = stateRef.current
-      if (!state.dragging) return
-
-      const position = getContnrolPosition(e, domNode, state.touchIndentifier, scale)
-      if (position === null) return
-      const { x, y } = position
-      const coreEvent = createCoreData(domNode, state, x, y)
-
-      const shouldContinune = onStop(e, coreEvent)
-      if (shouldContinune === false) return
-
-      if (domNode.current && enableUserSelect) {
-        removeUserSelectStyle(domNode.current.ownerDocument)
-      }
-
-      log('DragCore - handleStop: %j', coreEvent)
-
-      stateRef.current = { ...state, dragging: false, lastX: NaN, lastY: NaN }
-
-      if (domNode) {
-        // eslint-disable-next-line no-use-before-define
-        removeEvent(domNode.current.ownerDocument, dragEvent.move, handleDrag)
-        removeEvent(domNode.current.ownerDocument, dragEvent.stop, handleDragStop)
-      }
-    },
-    [domNode]
-  )
-
   const handleDrag = useCallback(
     (e: MouseTouchEvent) => {
       const state = stateRef.current
@@ -156,6 +127,36 @@ const DragCore: FC<DragCoreProps> = (props) => {
       }
 
       stateRef.current = { ...state, dragging: true, lastX: x, lastY: y }
+    },
+    [domNode]
+  )
+
+  const handleDragStop = useCallback(
+    (e: MouseTouchEvent) => {
+      const state = stateRef.current
+      if (!state.dragging) return
+
+      const position = getContnrolPosition(e, domNode, state.touchIndentifier, scale)
+      if (position === null) return
+      const { x, y } = position
+      const coreEvent = createCoreData(domNode, state, x, y)
+
+      const shouldContinune = onStop(e, coreEvent)
+      if (shouldContinune === false) return
+
+      if (domNode.current && enableUserSelect) {
+        removeUserSelectStyle(domNode.current.ownerDocument)
+      }
+
+      log('DragCore - handleStop: %j', coreEvent)
+
+      stateRef.current = { ...state, dragging: false, lastX: NaN, lastY: NaN }
+
+      if (domNode) {
+        // eslint-disable-next-line no-use-before-define
+        removeEvent(domNode.current.ownerDocument, dragEvent.move, handleDrag)
+        removeEvent(domNode.current.ownerDocument, dragEvent.stop, handleDragStop)
+      }
     },
     [domNode]
   )

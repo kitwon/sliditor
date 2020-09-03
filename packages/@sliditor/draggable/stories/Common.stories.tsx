@@ -1,6 +1,6 @@
 import './index.scss'
 
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import Draggable, { DraggableProps } from '../lib/Draggable'
 
 export default {

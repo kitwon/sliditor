@@ -14,34 +14,34 @@ import { ResizeHandleAxis, ResizeEvent } from './types'
 export type ResizeHandleFuction = (axis: ResizeHandleAxis) => ReactElement<any>
 
 export interface ResizeProps {
-  axis: Axis
+  axis?: Axis
   style?: CSSProperties
   height: number
   width: number
   draggableOpts?: DragCoreProps
-  lockAspectRatio: boolean
-  handleSize: [number, number]
-  maxConstraints: [number, number]
-  minConstraints: [number, number]
+  lockAspectRatio?: boolean
+  handleSize?: [number, number]
+  maxConstraints?: [number, number]
+  minConstraints?: [number, number]
   onResize?: ResizeEvent
   onResizeStart?: ResizeEvent
   onResizeStop?: ResizeEvent
-  handle: ReactElement<any> | ResizeHandleFuction
-  resizeHandles: ResizeHandleAxis[]
+  handle?: ReactElement<any> | ResizeHandleFuction
+  resizeHandles?: ResizeHandleAxis[]
   transformScale?: number
-  children: ReactElement
+  children?: ReactElement
 }
 
 const ResizeCore: FC<ResizeProps> = (props) => {
   const {
     children,
     handle,
-    resizeHandles,
+    resizeHandles = ['br'],
     draggableOpts,
     transformScale = 1,
     lockAspectRatio,
-    minConstraints,
-    maxConstraints
+    minConstraints = [20, 20],
+    maxConstraints = [Infinity, Infinity]
   } = props
 
   const lastHandleRect = useRef<DOMRect>(null)
@@ -56,7 +56,7 @@ const ResizeCore: FC<ResizeProps> = (props) => {
         return handle
       }
 
-      return <span className={`rc-resiable-handle is-${handleAxis}`} />
+      return <span className={`rc-resizable-handle is-${handleAxis}`} />
     },
     [handle]
   )
@@ -141,6 +141,7 @@ const ResizeCore: FC<ResizeProps> = (props) => {
         ;[width, height] = runConstraints(width, height)
         const demensionsChanged = width !== props.width || height !== props.height
 
+        console.log(handleName)
         const cb = typeof props[handleName] === 'function' ? props[handleName] : null
         const shouldSkipCb = handleName === 'onResize' && !demensionsChanged
         if (cb && !shouldSkipCb) {
