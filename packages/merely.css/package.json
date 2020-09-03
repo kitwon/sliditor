@@ -1,6 +1,6 @@
 {
   "name": "merely.css",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Highly resuable, flexible styles",
   "keywords": [
     "sass"
@@ -19,7 +19,7 @@
     "types"
   ],
   "scripts": {
-    "install": "cd docs && yarn",
+    "init:docs": "cd docs && yarn",
     "docs:dev": "cd docs && npm run develop",
     "docs:prod": "cd docs && npm run build",
     "storybook": "start-storybook -p 6006",
