@@ -36,10 +36,11 @@ const ResizeCore: FC<ResizeProps> = (props) => {
   const {
     children,
     handle,
-    resizeHandles = ['br'],
     draggableOpts,
-    transformScale = 1,
     lockAspectRatio,
+    axis = 'both',
+    resizeHandles = ['br'],
+    transformScale = 1,
     minConstraints = [20, 20],
     maxConstraints = [Infinity, Infinity]
   } = props
@@ -106,7 +107,6 @@ const ResizeCore: FC<ResizeProps> = (props) => {
   const resizeHandler = useCallback(
     (handleName: 'onResize' | 'onResizeStart' | 'onResizeStop', handleAxis: ResizeHandleAxis) => {
       return (e: SyntheticEvent, dragData: DraggableData) => {
-        const { axis } = props
         let deltaX = dragData.deltaX / transformScale
         let deltaY = dragData.deltaY / transformScale
 
@@ -115,8 +115,8 @@ const ResizeCore: FC<ResizeProps> = (props) => {
 
         if (!canDragX && !canDragY) return
 
-        const axisVertical = axis[0]
-        const axisHorizontal = axis[axis.length - 1]
+        const axisVertical = handleAxis[0]
+        const axisHorizontal = handleAxis[handleAxis.length - 1]
 
         const handleRect = dragData.node.getBoundingClientRect()
         if (lastHandleRect.current !== null) {
@@ -141,7 +141,6 @@ const ResizeCore: FC<ResizeProps> = (props) => {
         ;[width, height] = runConstraints(width, height)
         const demensionsChanged = width !== props.width || height !== props.height
 
-        console.log(handleName)
         const cb = typeof props[handleName] === 'function' ? props[handleName] : null
         const shouldSkipCb = handleName === 'onResize' && !demensionsChanged
         if (cb && !shouldSkipCb) {
@@ -152,21 +151,21 @@ const ResizeCore: FC<ResizeProps> = (props) => {
         if (handleName === 'onResizeStop') resetData()
       }
     },
-    []
+    [axis]
   )
 
   return cloneElement(children, {
     children: [
       ...children.props.children,
-      ...resizeHandles.map((axis) => (
+      ...resizeHandles.map((pos) => (
         <DragCore
           {...draggableOpts}
-          key={`resiableHandle-${axis}`}
-          onStop={resizeHandler('onResizeStop', axis)}
-          onStart={resizeHandler('onResizeStart', axis)}
-          onDrag={resizeHandler('onResize', axis)}
+          key={`resiableHandle-${pos}`}
+          onStop={resizeHandler('onResizeStop', pos)}
+          onStart={resizeHandler('onResizeStart', pos)}
+          onDrag={resizeHandler('onResize', pos)}
         >
-          {renderResizeHandle(axis)}
+          {renderResizeHandle(pos)}
         </DragCore>
       ))
     ]

@@ -22,20 +22,16 @@ const Resizable: FC<ResizeProps> = (props) => {
   const { style, onResize, children, ...resizeProps } = props
 
   const handleResize: ResizeEvent = (e, data) => {
-    console.log(data)
     const { size } = data
+    console.log(size)
+    // eslint-disable-next-line no-unused-expressions
+    e.persist && e.persist()
+    setState({ ...state, ...size })
+
     if (onResize) {
-      // eslint-disable-next-line no-unused-expressions
-      e.persist && e.persist()
-      setState(onResize(e, data))
-    } else {
-      setState(size)
+      onResize(e, data)
     }
   }
-
-  useEffect(() => {
-    console.log(state)
-  }, [state])
 
   return (
     <ResizeCore {...resizeProps} onResize={handleResize} width={state.height} height={state.height}>
