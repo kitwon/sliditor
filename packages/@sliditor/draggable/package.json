@@ -27,7 +27,7 @@
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
     "storybook": "start-storybook -p 6006",
-    "build": "rollup -c rollup.config.js",
+    "build": "rollup -c rollup.config.js --environment BUILD:production",
     "build-storybook": "build-storybook"
   },
   "dependencies": {

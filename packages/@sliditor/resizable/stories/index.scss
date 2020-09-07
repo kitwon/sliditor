@@ -3,9 +3,9 @@ body {
 }
 
 .rc {
-  &-draggable {
+  &-resizable {
+    position: relative;
     display: inline-block;
-    cursor: move;
     width: 110px;
     height: 110px;
     padding: 5px;
@@ -14,24 +14,19 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-  }
 
-  &-dragged {
-    border-color: royalblue !important;
-  }
-
-  &-dragging {
-    border-color: purple !important;
-  }
-}
-
-.rc {
-  &-resizable {
     &-handle {
       display: inline-block;
-      width: 5px;
-      height: 5px;
-      background-color: blue;
+      background-color: plum;
+      width: 8px;
+      height: 8px;
+      position: absolute;
+
+      &.is-se {
+        bottom: 5px;
+        right: 5px;
+        cursor: se-resize;
+      }
     }
   }
 }

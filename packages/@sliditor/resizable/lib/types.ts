@@ -1,6 +1,6 @@
 import { SyntheticEvent } from 'react'
 
-export type ResizeHandleAxis = 't' | 'r' | 'b' | 'l' | 'tl' | 'tr' | 'bl' | 'br'
+export type ResizeHandleAxis = 'n' | 'e' | 's' | 'w' | 'ne' | 'nw' | 'se' | 'sw'
 
 export interface ResizeData {
   node: HTMLElement
