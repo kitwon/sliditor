@@ -41,6 +41,6 @@ export interface ITouchEvent extends TouchEvent {
   targetTouches: TouchList
 }
 
-export type DraggableEventHandler = (e: MouseEvent, data: DraggableData) => void | boolean
+export type DraggableEventHandler = (e: SyntheticEvent, data: DraggableData) => void | boolean
 
 export type MouseTouchEvent = MouseEvent & ITouchEvent & SyntheticEvent

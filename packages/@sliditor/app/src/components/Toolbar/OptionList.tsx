@@ -1,9 +1,9 @@
-import React, { FC, useCallback } from 'react'
+import React, { FC, useCallback, SyntheticEvent } from 'react'
 import { DragCore, DraggableEventHandler, DraggableData } from '@sliditor/draggable'
 import { TOOLBAR_ADD_OPTIONS } from './constants'
 import styled from '../../assets/styles'
 
-export type OptionEvent = (type: string, coreData: DraggableData, e: MouseEvent) => any
+export type OptionEvent = (type: string, coreData: DraggableData, e: SyntheticEvent) => any
 
 export interface OptionProps {
   onDrag?: OptionEvent
