@@ -61,7 +61,7 @@ export default function useBlocks() {
     const pageBlocks = pages[currentPage]
     if (!pageBlocks || !currentBlock) return null
     return pageBlocks[currentBlock]
-  }, [state.currentBlock])
+  }, [state])
 
   return { state, update, add, select, getCurrentBlock }
 }
