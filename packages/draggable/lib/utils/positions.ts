@@ -1,4 +1,5 @@
-import { MutableRefObject } from 'react'
+import { RefObject, MutableRefObject } from 'react'
+
 import { DraggableState, MouseTouchEvent, DraggableData, BoundsShape } from '../types'
 import { getTouch, offsetFromParent, innerWidth, outerWidth, innerHeight, outerHeight } from './dom'
 import { isNum, int } from './helpers'
@@ -24,9 +25,9 @@ export function getBoundPosition(
   let newY = y
   let newBounds = typeof bounds === 'string' ? {} : cloneBounds(bounds)
 
-  if (typeof bounds === 'string') {
-    const { ownerDocument } = node
-    const ownerWindow = ownerDocument.defaultView
+  const { ownerDocument } = node
+  const ownerWindow = ownerDocument.defaultView
+  if (typeof bounds === 'string' && ownerWindow) {
     let boundNode
     if (bounds === 'parent') {
       boundNode = node.parentNode
@@ -57,23 +58,27 @@ export function getBoundPosition(
     }
   }
 
-  if (isNum(newBounds.right)) newX = Math.min(newX, newBounds.right)
-  if (isNum(newBounds.bottom)) newY = Math.min(newY, newBounds.bottom)
+  if (typeof newBounds.right === 'number' && isNum(newBounds.right))
+    newX = Math.min(newX, newBounds.right)
+  if (typeof newBounds.bottom === 'number' && isNum(newBounds.bottom))
+    newY = Math.min(newY, newBounds.bottom)
 
-  if (isNum(newBounds.left)) newX = Math.max(newX, newBounds.left)
-  if (isNum(newBounds.top)) newY = Math.max(newY, newBounds.top)
+  if (typeof newBounds.left === 'number' && isNum(newBounds.left))
+    newX = Math.max(newX, newBounds.left)
+  if (typeof newBounds.top === 'number' && isNum(newBounds.top))
+    newY = Math.max(newY, newBounds.top)
 
   return [newX, newY]
 }
 
 export function getContnrolPosition(
   e: MouseTouchEvent,
-  draggableRef: MutableRefObject<HTMLElement>,
-  touchIndentifier: number,
-  scale: any
+  draggableRef: RefObject<HTMLElement>,
+  touchIndentifier?: number,
+  scale?: any
 ) {
   const touchObj = typeof touchIndentifier === 'number' ? getTouch(e, touchIndentifier) : null
-  if (typeof touchIndentifier === 'number' && !touchObj) return null
+  if (!draggableRef.current || (typeof touchIndentifier === 'number' && !touchObj)) return null
 
   const node = draggableRef.current
 

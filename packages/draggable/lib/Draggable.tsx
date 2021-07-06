@@ -60,8 +60,8 @@ const Draggable: FC<DraggableProps> = (props) => {
   const {
     children,
     className,
-    draggedClassName,
-    draggingClassName,
+    draggedClassName = 'dragged',
+    draggingClassName = 'dragging',
     position,
     bounds,
     positionOffset,
@@ -128,7 +128,7 @@ const Draggable: FC<DraggableProps> = (props) => {
     setChildProps({
       style: { ...childProps.style, ...cssTransform },
       className: classnames,
-      transform: svgTransform
+      transform: svgTransform || ''
     })
   }, [refState])
 
@@ -163,17 +163,20 @@ const Draggable: FC<DraggableProps> = (props) => {
       log('Draggable: handleDrag: %j', coreData)
       const uiData = createDraggableData({ x: state.x, y: state.y, scale, coreData })
 
-      const newState: Partial<typeof state> = {
+      const newState = {
         x: uiData.x,
-        y: uiData.y
+        y: uiData.y,
+        slackX: 0,
+        slackY: 0
       }
 
-      if (bounds) {
-        const { x, y } = newState
+      // if (bounds) {
+      const { x, y } = newState
 
-        newState.x += state.slackX
-        newState.y += state.slackY
+      newState.x += state.slackX
+      newState.y += state.slackY
 
+      if (domNode.current) {
         const [newStateX, newStateY] = getBoundPosition(
           domNode.current,
           bounds,
@@ -185,12 +188,13 @@ const Draggable: FC<DraggableProps> = (props) => {
 
         newState.slackX = state.slackX + (x - newState.x)
         newState.slackY = state.slackY + (y - newState.y)
-
-        uiData.x = newState.x
-        uiData.y = newState.y
-        uiData.deltaX = newState.x - state.x
-        uiData.deltaY = newState.y - state.y
       }
+
+      uiData.x = newState.x
+      uiData.y = newState.y
+      uiData.deltaX = newState.x - state.x
+      uiData.deltaY = newState.y - state.y
+      // }
 
       const shouldUpdate = onDrag && onDrag(e, uiData)
       if (shouldUpdate === false) return false
@@ -226,9 +230,11 @@ const Draggable: FC<DraggableProps> = (props) => {
   return (
     <DragCore
       {...{ ...props, onStart: handleDragStart, onDrag: handleDrag, onStop: handleDragStop }}
-      domRef={(instace) => {
-        domNode.current = instace.current
-      }}
+      domNode={domNode}
+      ref={domNode}
+      // domRef={(instace) => {
+      //   domNode.current = instace.current
+      // }}
     >
       {cloneElement(children, {
         ...childProps

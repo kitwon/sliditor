@@ -5,9 +5,10 @@ import {
   ReactElement,
   useRef,
   useEffect,
-  MutableRefObject,
+  RefObject,
   useCallback,
-  SyntheticEvent
+  SyntheticEvent,
+  forwardRef
 } from 'react'
 import {
   matchSelectorAndParent,
@@ -41,7 +42,7 @@ export interface DragCoreProps {
   enableUserSelect?: boolean
   scale?: number
   grid?: [number, number]
-  domRef?: (instance: MutableRefObject<HTMLElement>) => any
+  domNode: RefObject<HTMLElement>
   onMousedown?: (e: SyntheticEvent) => void
   /**
    * Emit when draggable start, if return `false`,
@@ -72,7 +73,7 @@ const events = {
 
 let dragEvent = events.mouse
 
-const DragCore: FC<DragCoreProps> = (props) => {
+const DragCore = forwardRef<Node, DragCoreProps>((props, ref) => {
   const {
     children,
     allowAnyClick,
@@ -80,7 +81,7 @@ const DragCore: FC<DragCoreProps> = (props) => {
     handle,
     cancel,
     grid,
-    domRef,
+    domNode,
     scale = 1,
     enableUserSelect = true,
     onStart = () => 0,
@@ -92,12 +93,12 @@ const DragCore: FC<DragCoreProps> = (props) => {
     lastX: NaN,
     lastY: NaN,
     dragging: false,
-    touchIndentifier: null
+    touchIndentifier: undefined as number | undefined
   })
 
   // ref never use as function
   // const domNode = ref as MutableRefObject<HTMLElement>
-  const domNode = useRef<HTMLElement>(null)
+  // const domNode = useRef<HTMLElement>(null)
 
   const handleDrag = useCallback(
     (e: MouseTouchEvent) => {
@@ -152,10 +153,10 @@ const DragCore: FC<DragCoreProps> = (props) => {
 
       stateRef.current = { ...state, dragging: false, lastX: NaN, lastY: NaN }
 
-      if (domNode) {
+      if (domNode.current) {
         // eslint-disable-next-line no-use-before-define
-        removeEvent(domNode.current.ownerDocument, dragEvent.move, handleDrag)
-        removeEvent(domNode.current.ownerDocument, dragEvent.stop, handleDragStop)
+        removeEvent(domNode.current.ownerDocument, dragEvent.move, handleDrag as EventListener)
+        removeEvent(domNode.current.ownerDocument, dragEvent.stop, handleDragStop as EventListener)
       }
     },
     [domNode]
@@ -174,10 +175,10 @@ const DragCore: FC<DragCoreProps> = (props) => {
       if (!allowAnyClick && e.button !== 0) return
 
       const node = domNode.current
-      if (!node || !node.ownerDocument || !node.ownerDocument.body) {
+      const ownerDocument = node?.ownerDocument
+      if (!node || !ownerDocument || !ownerDocument.defaultView) {
         throw new Error('Draggable not mounted on DragStart')
       }
-      const { ownerDocument } = node
 
       // Handle cancel \ handle \ disable prop.
       if (
@@ -215,8 +216,8 @@ const DragCore: FC<DragCoreProps> = (props) => {
         lastY: y
       }
 
-      addEvent(ownerDocument, dragEvent.move, handleDrag)
-      addEvent(ownerDocument, dragEvent.stop, handleDragStop)
+      addEvent(ownerDocument, dragEvent.move, handleDrag as EventListener)
+      addEvent(ownerDocument, dragEvent.stop, handleDragStop as EventListener)
     },
     [domNode]
   )
@@ -242,30 +243,39 @@ const DragCore: FC<DragCoreProps> = (props) => {
   }, [])
 
   useEffect(() => {
-    if (domNode) {
-      if (isFunction(domRef)) domRef(domNode)
-      addEvent(domNode.current, events.touch.start, onTouchStart, { passive: false })
+    // if (ref) {
+    //   addEvent(ref, events.touch.start, onTouchStart as EventListener, {
+    //     passive: false
+    //   })
+    // }
+    if (domNode.current) {
+      // if (isFunction(ref)) domRef?.(domNode)
+      addEvent(domNode.current, events.touch.start, onTouchStart as EventListener, {
+        passive: false
+      })
     }
 
     return () => {
       if (domNode?.current) {
         const { ownerDocument } = domNode.current
-        removeEvent(ownerDocument, events.mouse.move, handleDrag)
-        removeEvent(ownerDocument, events.touch.move, handleDrag)
-        removeEvent(ownerDocument, events.mouse.stop, handleDragStop)
-        removeEvent(ownerDocument, events.touch.stop, handleDragStop)
-        removeEvent(domNode.current, events.touch.start, onTouchStart, { passive: false })
+        removeEvent(ownerDocument, events.mouse.move, handleDrag as EventListener)
+        removeEvent(ownerDocument, events.touch.move, handleDrag as EventListener)
+        removeEvent(ownerDocument, events.mouse.stop, handleDragStop as EventListener)
+        removeEvent(ownerDocument, events.touch.stop, handleDragStop as EventListener)
+        removeEvent(domNode.current, events.touch.start, onTouchStart as EventListener, {
+          passive: false
+        })
         if (enableUserSelect) removeUserSelectStyle(ownerDocument)
       }
     }
   }, [domNode])
 
   return cloneElement(children, {
-    ref: domNode,
+    ref,
     onMouseDown,
     onMouseUp,
     onTouchEnd
   })
-}
+})
 
 export default DragCore

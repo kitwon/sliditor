@@ -35,6 +35,7 @@ export function addEvent(
     // @ts-ignore
     el.attachEvent(`on${event}`, handler)
   } else {
+    // @ts-ignore
     // eslint-disable-next-line no-param-reassign
     el[`on${event}`] = handler
   }
@@ -55,6 +56,7 @@ export function removeEvent(
     // @ts-ignore
     el.detachEvent(`on${event}`, handler)
   } else {
+    // @ts-ignore
     // eslint-disable-next-line no-param-reassign
     el[`on${event}`] = null
   }
@@ -71,16 +73,16 @@ export function matchSelector(el: Node, selector: string) {
         'msMatchesSelector',
         'oMatchesSelector'
       ],
-      (method) => isFunction(el[method])
-    )
+      (method) => isFunction((el as any)[method])
+    ) as string
   }
 
-  if (!isFunction(el[matchsSelectorFunc])) return false
-  return el[matchsSelectorFunc](selector)
+  if (!isFunction((el as any)[matchsSelectorFunc])) return false
+  return (el as any)[matchsSelectorFunc](selector)
 }
 
 export function matchSelectorAndParent(el: Node, selector: string, baseNode: Node) {
-  let node = el
+  let node: (Node & ParentNode) | null | undefined = el as Node & ParentNode
   do {
     if (matchSelector(node, selector)) return true
     if (node === baseNode) return false
@@ -152,40 +154,48 @@ export function removeUserSelectStyle(doc?: Document) {
 
 export function outerWidth(node: HTMLElement) {
   let width = node.clientWidth
-  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
-  width += int(computedStyle.borderLeftWidth)
-  width += int(computedStyle.borderRightWidth)
+  const computedStyle = node.ownerDocument?.defaultView?.getComputedStyle(node)
+  if (computedStyle) {
+    width += int(computedStyle.borderLeftWidth)
+    width += int(computedStyle.borderRightWidth)
+  }
   return width
 }
 
 export function outerHeight(node: HTMLElement) {
   let height = node.clientHeight
-  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
-  height += int(computedStyle.borderTopWidth) + int(computedStyle.borderBottomWidth)
-  height += int(computedStyle.borderBottomWidth)
+  const computedStyle = node.ownerDocument?.defaultView?.getComputedStyle(node)
+  if (computedStyle) {
+    height += int(computedStyle.borderTopWidth) + int(computedStyle.borderBottomWidth)
+    height += int(computedStyle.borderBottomWidth)
+  }
   return height
 }
 
 export function innerWidth(node: HTMLElement) {
   let width = node.clientWidth
-  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
-  width -= int(computedStyle.paddingLeft)
-  width -= int(computedStyle.paddingRight)
+  const computedStyle = node.ownerDocument?.defaultView?.getComputedStyle(node)
+  if (computedStyle) {
+    width -= int(computedStyle.paddingLeft)
+    width -= int(computedStyle.paddingRight)
+  }
   return width
 }
 
 export function innerHeight(node: HTMLElement) {
   let height = node.clientHeight
-  const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node)
-  height -= int(computedStyle.paddingTop)
-  height -= int(computedStyle.paddingBottom)
+  const computedStyle = node.ownerDocument?.defaultView?.getComputedStyle(node)
+  if (computedStyle) {
+    height -= int(computedStyle.paddingTop)
+    height -= int(computedStyle.paddingBottom)
+  }
   return height
 }
 
 export function getTranslation(
   { x, y }: ControlPosition,
-  positionOffset: OffsetPositionOfControl,
-  unit: string
+  positionOffset?: OffsetPositionOfControl,
+  unit = 'px'
 ) {
   let translation = `translate(${x}${unit}, ${y}${unit})`
   if (positionOffset) {
@@ -203,7 +213,7 @@ export function getTranslation(
 
 export function createCSSTransform(
   controlPos: ControlPosition,
-  positionOffset: OffsetPositionOfControl
+  positionOffset?: OffsetPositionOfControl
 ) {
   const translation = getTranslation(controlPos, positionOffset, 'px')
   return { [browserPrefixToKey('transform', browserPrefix)]: translation }
@@ -211,7 +221,7 @@ export function createCSSTransform(
 
 export function createSVGTransform(
   controlPos: ControlPosition,
-  positionOffset: OffsetPositionOfControl
+  positionOffset?: OffsetPositionOfControl
 ) {
   const translation = getTranslation(controlPos, positionOffset, '')
   return translation

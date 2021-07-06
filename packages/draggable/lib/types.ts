@@ -36,11 +36,11 @@ export interface OffsetPositionOfControl {
   y: number | string
 }
 
-export interface ITouchEvent extends TouchEvent {
+export interface DTouchEvent extends TouchEvent {
   changedTouches: TouchList
   targetTouches: TouchList
 }
 
 export type DraggableEventHandler = (e: SyntheticEvent, data: DraggableData) => void | boolean
 
-export type MouseTouchEvent = MouseEvent & ITouchEvent & SyntheticEvent
+export type MouseTouchEvent = MouseEvent & DTouchEvent & SyntheticEvent
