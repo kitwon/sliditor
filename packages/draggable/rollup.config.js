@@ -1,5 +1,6 @@
 const { babel } = require('@rollup/plugin-babel')
 const { nodeResolve } = require('@rollup/plugin-node-resolve')
+const commonjs = require('@rollup/plugin-commonjs')
 const { terser } = require('rollup-plugin-terser')
 
 module.exports = {
@@ -19,13 +20,13 @@ module.exports = {
   ],
   plugins: [
     nodeResolve({
-      customResolveOptions: {
-        moduleDirectory: 'node_module',
-        extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts', '.tsx']
-      }
+      browser: true,
+      extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts', '.tsx']
     }),
+    commonjs(),
     babel({
       exclude: './node_modules/**',
+      babelHelpers: 'bundled',
       extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', '.ts', '.tsx']
     })
   ],

@@ -1,5 +1,42 @@
 import React, { useRef, useCallback, useEffect, cloneElement, useState } from 'react';
-import classNames from 'classnames';
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+
+    if (enumerableOnly) {
+      symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+    }
+
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
@@ -34,40 +71,6 @@ function _extends() {
   return _extends.apply(this, arguments);
 }
 
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
-
-  if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly) symbols = symbols.filter(function (sym) {
-      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-    });
-    keys.push.apply(keys, symbols);
-  }
-
-  return keys;
-}
-
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
-  }
-
-  return target;
-}
-
 function _slicedToArray(arr, i) {
   return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
 }
@@ -77,14 +80,17 @@ function _arrayWithHoles(arr) {
 }
 
 function _iterableToArrayLimit(arr, i) {
-  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+
+  if (_i == null) return;
   var _arr = [];
   var _n = true;
   var _d = false;
-  var _e = undefined;
+
+  var _s, _e;
 
   try {
-    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
       _arr.push(_s.value);
 
       if (i && _arr.length === i) break;
@@ -124,6 +130,65 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
+var classnames = {exports: {}};
+
+/*!
+  Copyright (c) 2018 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+
+(function (module) {
+  /* global define */
+  (function () {
+
+    var hasOwn = {}.hasOwnProperty;
+
+    function classNames() {
+      var classes = [];
+
+      for (var i = 0; i < arguments.length; i++) {
+        var arg = arguments[i];
+        if (!arg) continue;
+        var argType = typeof arg;
+
+        if (argType === 'string' || argType === 'number') {
+          classes.push(arg);
+        } else if (Array.isArray(arg)) {
+          if (arg.length) {
+            var inner = classNames.apply(null, arg);
+
+            if (inner) {
+              classes.push(inner);
+            }
+          }
+        } else if (argType === 'object') {
+          if (arg.toString === Object.prototype.toString) {
+            for (var key in arg) {
+              if (hasOwn.call(arg, key) && arg[key]) {
+                classes.push(key);
+              }
+            }
+          } else {
+            classes.push(arg.toString());
+          }
+        }
+      }
+
+      return classes.join(' ');
+    }
+
+    if (module.exports) {
+      classNames.default = classNames;
+      module.exports = classNames;
+    } else {
+      window.classNames = classNames;
+    }
+  })();
+})(classnames);
+
+var classNames = classnames.exports;
+
 function find(array, cb) {
   if (!Array.isArray(array)) return undefined;
 
@@ -153,14 +218,6 @@ function canDragX(axis) {
 }
 function canDragY(axis) {
   return axis === 'both' || axis === 'y';
-}
-function log() {
-  if (process.env.NODE_ENV === 'development') {
-    var _console;
-
-    // eslint-disable-next-line
-    (_console = console).log.apply(_console, arguments);
-  }
 }
 
 var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
@@ -231,6 +288,7 @@ function addEvent(el, event, handler, inputOptions) {
     // @ts-ignore
     el.attachEvent("on".concat(event), handler);
   } else {
+    // @ts-ignore
     // eslint-disable-next-line no-param-reassign
     el["on".concat(event)] = handler;
   }
@@ -248,6 +306,7 @@ function removeEvent(el, event, handler, inputOptions) {
     // @ts-ignore
     el.detachEvent("on".concat(event), handler);
   } else {
+    // @ts-ignore
     // eslint-disable-next-line no-param-reassign
     el["on".concat(event)] = null;
   }
@@ -336,36 +395,61 @@ function removeUserSelectStyle(doc) {
   } catch (e) {}
 }
 function outerWidth(node) {
+  var _node$ownerDocument, _node$ownerDocument$d;
+
   var width = node.clientWidth;
-  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
-  width += _int(computedStyle.borderLeftWidth);
-  width += _int(computedStyle.borderRightWidth);
+  var computedStyle = (_node$ownerDocument = node.ownerDocument) === null || _node$ownerDocument === void 0 ? void 0 : (_node$ownerDocument$d = _node$ownerDocument.defaultView) === null || _node$ownerDocument$d === void 0 ? void 0 : _node$ownerDocument$d.getComputedStyle(node);
+
+  if (computedStyle) {
+    width += _int(computedStyle.borderLeftWidth);
+    width += _int(computedStyle.borderRightWidth);
+  }
+
   return width;
 }
 function outerHeight(node) {
+  var _node$ownerDocument2, _node$ownerDocument2$;
+
   var height = node.clientHeight;
-  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
-  height += _int(computedStyle.borderTopWidth) + _int(computedStyle.borderBottomWidth);
-  height += _int(computedStyle.borderBottomWidth);
+  var computedStyle = (_node$ownerDocument2 = node.ownerDocument) === null || _node$ownerDocument2 === void 0 ? void 0 : (_node$ownerDocument2$ = _node$ownerDocument2.defaultView) === null || _node$ownerDocument2$ === void 0 ? void 0 : _node$ownerDocument2$.getComputedStyle(node);
+
+  if (computedStyle) {
+    height += _int(computedStyle.borderTopWidth) + _int(computedStyle.borderBottomWidth);
+    height += _int(computedStyle.borderBottomWidth);
+  }
+
   return height;
 }
 function innerWidth(node) {
+  var _node$ownerDocument3, _node$ownerDocument3$;
+
   var width = node.clientWidth;
-  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
-  width -= _int(computedStyle.paddingLeft);
-  width -= _int(computedStyle.paddingRight);
+  var computedStyle = (_node$ownerDocument3 = node.ownerDocument) === null || _node$ownerDocument3 === void 0 ? void 0 : (_node$ownerDocument3$ = _node$ownerDocument3.defaultView) === null || _node$ownerDocument3$ === void 0 ? void 0 : _node$ownerDocument3$.getComputedStyle(node);
+
+  if (computedStyle) {
+    width -= _int(computedStyle.paddingLeft);
+    width -= _int(computedStyle.paddingRight);
+  }
+
   return width;
 }
 function innerHeight(node) {
+  var _node$ownerDocument4, _node$ownerDocument4$;
+
   var height = node.clientHeight;
-  var computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
-  height -= _int(computedStyle.paddingTop);
-  height -= _int(computedStyle.paddingBottom);
+  var computedStyle = (_node$ownerDocument4 = node.ownerDocument) === null || _node$ownerDocument4 === void 0 ? void 0 : (_node$ownerDocument4$ = _node$ownerDocument4.defaultView) === null || _node$ownerDocument4$ === void 0 ? void 0 : _node$ownerDocument4$.getComputedStyle(node);
+
+  if (computedStyle) {
+    height -= _int(computedStyle.paddingTop);
+    height -= _int(computedStyle.paddingBottom);
+  }
+
   return height;
 }
-function getTranslation(_ref2, positionOffset, unit) {
+function getTranslation(_ref2, positionOffset) {
   var x = _ref2.x,
       y = _ref2.y;
+  var unit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'px';
   var translation = "translate(".concat(x).concat(unit, ", ").concat(y).concat(unit, ")");
 
   if (positionOffset) {
@@ -399,10 +483,10 @@ function getBoundPosition(node, bounds, x, y) {
   var newX = x;
   var newY = y;
   var newBounds = typeof bounds === 'string' ? {} : cloneBounds(bounds);
+  var ownerDocument = node.ownerDocument;
+  var ownerWindow = ownerDocument.defaultView;
 
-  if (typeof bounds === 'string') {
-    var ownerDocument = node.ownerDocument;
-    var ownerWindow = ownerDocument.defaultView;
+  if (typeof bounds === 'string' && ownerWindow) {
     var boundNode;
 
     if (bounds === 'parent') {
@@ -425,15 +509,15 @@ function getBoundPosition(node, bounds, x, y) {
     };
   }
 
-  if (isNum(newBounds.right)) newX = Math.min(newX, newBounds.right);
-  if (isNum(newBounds.bottom)) newY = Math.min(newY, newBounds.bottom);
-  if (isNum(newBounds.left)) newX = Math.max(newX, newBounds.left);
-  if (isNum(newBounds.top)) newY = Math.max(newY, newBounds.top);
+  if (typeof newBounds.right === 'number' && isNum(newBounds.right)) newX = Math.min(newX, newBounds.right);
+  if (typeof newBounds.bottom === 'number' && isNum(newBounds.bottom)) newY = Math.min(newY, newBounds.bottom);
+  if (typeof newBounds.left === 'number' && isNum(newBounds.left)) newX = Math.max(newX, newBounds.left);
+  if (typeof newBounds.top === 'number' && isNum(newBounds.top)) newY = Math.max(newY, newBounds.top);
   return [newX, newY];
 }
 function getContnrolPosition(e, draggableRef, touchIndentifier, scale) {
   var touchObj = typeof touchIndentifier === 'number' ? getTouch(e, touchIndentifier) : null;
-  if (typeof touchIndentifier === 'number' && !touchObj) return null;
+  if (!(draggableRef !== null && draggableRef !== void 0 && draggableRef.current) || typeof touchIndentifier === 'number' && !touchObj) return null;
   var node = draggableRef.current;
   var offsetParent = draggableRef.current.offsetParent || node.offsetParent || node.ownerDocument.body;
   return offsetFromParent(touchObj || e, offsetParent, scale);
@@ -526,39 +610,11 @@ var DragCore = function DragCore(props) {
     lastX: NaN,
     lastY: NaN,
     dragging: false,
-    touchIndentifier: null
+    touchIndentifier: undefined
   }); // ref never use as function
   // const domNode = ref as MutableRefObject<HTMLElement>
 
   var domNode = useRef(null);
-  var handleDragStop = useCallback(function (e) {
-    var state = stateRef.current;
-    if (!state.dragging) return;
-    var position = getContnrolPosition(e, domNode, state.touchIndentifier, scale);
-    if (position === null) return;
-    var x = position.x,
-        y = position.y;
-    var coreEvent = createCoreData(domNode, state, x, y);
-    var shouldContinune = onStop(e, coreEvent);
-    if (shouldContinune === false) return;
-
-    if (domNode.current && enableUserSelect) {
-      removeUserSelectStyle(domNode.current.ownerDocument);
-    }
-
-    log('DragCore - handleStop: %j', coreEvent);
-    stateRef.current = _objectSpread2(_objectSpread2({}, state), {}, {
-      dragging: false,
-      lastX: NaN,
-      lastY: NaN
-    });
-
-    if (domNode) {
-      // eslint-disable-next-line no-use-before-define
-      removeEvent(domNode.current.ownerDocument, dragEvent.move, handleDrag);
-      removeEvent(domNode.current.ownerDocument, dragEvent.stop, handleDragStop);
-    }
-  }, [domNode]);
   var handleDrag = useCallback(function (e) {
     var state = stateRef.current;
     var position = getContnrolPosition(e, domNode, state.touchIndentifier, scale);
@@ -578,7 +634,6 @@ var DragCore = function DragCore(props) {
     }
 
     var coreEvent = createCoreData(domNode, state, x, y);
-    log('DragCore - handleDrag: %j', coreEvent); // Manually emit the stop event
 
     var shouldUpdate = onDrag(e, coreEvent);
 
@@ -596,6 +651,32 @@ var DragCore = function DragCore(props) {
       lastY: y
     });
   }, [domNode]);
+  var handleDragStop = useCallback(function (e) {
+    var state = stateRef.current;
+    if (!state.dragging) return;
+    var position = getContnrolPosition(e, domNode, state.touchIndentifier, scale);
+    if (position === null) return;
+    var x = position.x,
+        y = position.y;
+    var coreEvent = createCoreData(domNode, state, x, y);
+    var shouldContinune = onStop(e, coreEvent);
+    if (shouldContinune === false) return;
+
+    if (domNode.current && enableUserSelect) {
+      removeUserSelectStyle(domNode.current.ownerDocument);
+    }
+    stateRef.current = _objectSpread2(_objectSpread2({}, state), {}, {
+      dragging: false,
+      lastX: NaN,
+      lastY: NaN
+    });
+
+    if (domNode.current) {
+      // eslint-disable-next-line no-use-before-define
+      removeEvent(domNode.current.ownerDocument, dragEvent.move, handleDrag);
+      removeEvent(domNode.current.ownerDocument, dragEvent.stop, handleDragStop);
+    }
+  }, [domNode]);
   /**
    * Handle staring
    * @param { MouseTouchEvent } e Event
@@ -607,12 +688,12 @@ var DragCore = function DragCore(props) {
 
     if (!allowAnyClick && e.button !== 0) return;
     var node = domNode.current;
+    var ownerDocument = node === null || node === void 0 ? void 0 : node.ownerDocument;
 
-    if (!node || !node.ownerDocument || !node.ownerDocument.body) {
+    if (!node || !ownerDocument || !ownerDocument.body || !ownerDocument.defaultView) {
       throw new Error('Draggable not mounted on DragStart');
-    }
+    } // Handle cancel \ handle \ disable prop.
 
-    var ownerDocument = node.ownerDocument; // Handle cancel \ handle \ disable prop.
 
     if (disable || !(e.target instanceof ownerDocument.defaultView.Node) || handle && !matchSelectorAndParent(e.target, handle, node) || cancel && matchSelectorAndParent(e.target, cancel, node)) {
       return;
@@ -629,7 +710,6 @@ var DragCore = function DragCore(props) {
     var x = position.x,
         y = position.y;
     var coreEvent = createCoreData(domNode, state, x, y);
-    log('DragCore - handleDragStart: %j', coreEvent);
     var shouldUpdate = onStart(e, coreEvent);
     if (shouldUpdate === false) return;
     if (enableUserSelect) addUserSelectStyles(ownerDocument);
@@ -658,15 +738,15 @@ var DragCore = function DragCore(props) {
     return handleDragStop(e);
   }, []);
   useEffect(function () {
-    if (domNode) {
-      if (isFunction(domRef)) domRef(domNode);
+    if (domNode.current) {
+      domRef === null || domRef === void 0 ? void 0 : domRef(domNode.current);
       addEvent(domNode.current, events.touch.start, onTouchStart, {
         passive: false
       });
     }
 
     return function () {
-      if (domNode === null || domNode === void 0 ? void 0 : domNode.current) {
+      if (domNode !== null && domNode !== void 0 && domNode.current) {
         var ownerDocument = domNode.current.ownerDocument;
         removeEvent(ownerDocument, events.mouse.move, handleDrag);
         removeEvent(ownerDocument, events.touch.move, handleDrag);
@@ -708,8 +788,10 @@ var Draggable = function Draggable(props) {
 
   var children = props.children,
       className = props.className,
-      draggedClassName = props.draggedClassName,
-      draggingClassName = props.draggingClassName,
+      _props$draggedClassNa = props.draggedClassName,
+      draggedClassName = _props$draggedClassNa === void 0 ? 'dragged' : _props$draggedClassNa,
+      _props$draggingClassN = props.draggingClassName,
+      draggingClassName = _props$draggingClassN === void 0 ? 'dragging' : _props$draggingClassN,
       position = props.position,
       bounds = props.bounds,
       positionOffset = props.positionOffset,
@@ -724,8 +806,8 @@ var Draggable = function Draggable(props) {
   } : _props$startPosition,
       onStop = props.onStop,
       onStart = props.onStart,
-      onDrag = props.onDrag;
-  var domNode = useRef(null);
+      onDrag = props.onDrag; // const domNode = useRef<HTMLElement>(null)
+  // const [domNode, setDomNode] = useState<HTMLElement | null>(null)
 
   var _useReferenceState = useReferenceState({
     dragging: false,
@@ -735,7 +817,8 @@ var Draggable = function Draggable(props) {
     prevPropsPos: _objectSpread2({}, position),
     slackX: 0,
     slackY: 0,
-    isElementSVG: false
+    isElementSVG: false,
+    domNode: null
   }),
       _useReferenceState2 = _slicedToArray(_useReferenceState, 3),
       stateRef = _useReferenceState2[0],
@@ -753,12 +836,12 @@ var Draggable = function Draggable(props) {
 
 
   useEffect(function () {
-    if (typeof window.SVGAElement !== 'undefined' && domNode.current instanceof window.SVGAElement) {
+    if (typeof window.SVGAElement !== 'undefined' && stateRef.current.domNode instanceof window.SVGAElement) {
       setState(_objectSpread2(_objectSpread2({}, stateRef.current), {}, {
         isElementSVG: true
       }));
     }
-  }, [domNode]);
+  }, [stateRef]);
   useEffect(function () {
     var _classNames;
 
@@ -783,7 +866,7 @@ var Draggable = function Draggable(props) {
     setChildProps({
       style: _objectSpread2(_objectSpread2({}, childProps.style), cssTransform),
       className: classnames,
-      transform: svgTransform
+      transform: svgTransform || ''
     });
   }, [refState]);
   useEffect(function () {
@@ -799,7 +882,6 @@ var Draggable = function Draggable(props) {
 
   var handleDragStart = useCallback(function (e, coreData) {
     var state = stateRef.current;
-    log('Draggable: handleDragStart: %j', coreData);
     var sholdStart = onStart && onStart(e, createDraggableData({
       x: state.x,
       y: state.y,
@@ -816,7 +898,6 @@ var Draggable = function Draggable(props) {
   var handleDrag = useCallback(function (e, coreData) {
     var state = stateRef.current;
     if (!state.dragging) return undefined;
-    log('Draggable: handleDrag: %j', coreData);
     var uiData = createDraggableData({
       x: state.x,
       y: state.y,
@@ -825,16 +906,18 @@ var Draggable = function Draggable(props) {
     });
     var newState = {
       x: uiData.x,
-      y: uiData.y
-    };
+      y: uiData.y,
+      slackX: 0,
+      slackY: 0
+    }; // if (bounds) {
 
-    if (bounds) {
-      var x = newState.x,
-          y = newState.y;
-      newState.x += state.slackX;
-      newState.y += state.slackY;
+    var x = newState.x,
+        y = newState.y;
+    newState.x += state.slackX;
+    newState.y += state.slackY;
 
-      var _getBoundPosition = getBoundPosition(domNode.current, bounds, newState.x, newState.y),
+    if (state.domNode) {
+      var _getBoundPosition = getBoundPosition(state.domNode, bounds, newState.x, newState.y),
           _getBoundPosition2 = _slicedToArray(_getBoundPosition, 2),
           newStateX = _getBoundPosition2[0],
           newStateY = _getBoundPosition2[1];
@@ -843,11 +926,12 @@ var Draggable = function Draggable(props) {
       newState.y = newStateY;
       newState.slackX = state.slackX + (x - newState.x);
       newState.slackY = state.slackY + (y - newState.y);
-      uiData.x = newState.x;
-      uiData.y = newState.y;
-      uiData.deltaX = newState.x - state.x;
-      uiData.deltaY = newState.y - state.y;
     }
+
+    uiData.x = newState.x;
+    uiData.y = newState.y;
+    uiData.deltaX = newState.x - state.x;
+    uiData.deltaY = newState.y - state.y; // }
 
     var shouldUpdate = onDrag && onDrag(e, uiData);
     if (shouldUpdate === false) return false;
@@ -859,7 +943,6 @@ var Draggable = function Draggable(props) {
     if (!state.dragging) return undefined;
     var shouldContinune = onStop && onStop(e, coreData);
     if (shouldContinune === false) return false;
-    log('Draggable: onDragStop: %j', coreData);
     var newState = {
       dragging: false,
       slackX: 0,
@@ -874,7 +957,9 @@ var Draggable = function Draggable(props) {
     onStop: handleDragStop
   }), {
     domRef: function domRef(instace) {
-      domNode.current = instace.current;
+      setState(_objectSpread2(_objectSpread2({}, stateRef.current), {}, {
+        domNode: instace
+      }));
     }
   }), /*#__PURE__*/cloneElement(children, _objectSpread2({}, childProps)));
 };

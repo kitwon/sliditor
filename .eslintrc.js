@@ -5,6 +5,7 @@ module.exports = {
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
+    project: './tsconfig.json',
     ecmaVersion: 2018,
     sourceType: 'module',
     ecmaFeatures: {
@@ -23,35 +24,20 @@ module.exports = {
   },
   plugins: ['prettier', 'react', '@typescript-eslint'],
   extends: [
-    'plugin:react/recommended',
-    'airbnb',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
-    'prettier/react'
+    'airbnb-typescript',
+    'plugin:prettier/recommended'
   ],
   rules: {
     'no-conosle': 'off',
     'react/prop-types': 'off',
-    'react/jsx-filename-extension': [1, { 'extensions': ['.js', '.jsx', '.ts', '.tsx'] }],
 
     'import/prefer-default-export': 'off',
     'import/no-extraneous-dependencies': 'off',
-    'import/extensions': [
-      'error',
-      'always',
-      {
-        'ts': 'never',
-        'tsx': 'never',
-        'js': 'never',
-        'jsx': 'never'
-      }
-    ],
 
     '@typescript-eslint/no-var-required': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/member-delimiter-style': 'off',
     '@typescript-eslint/ban-ts-ignore': 'off'

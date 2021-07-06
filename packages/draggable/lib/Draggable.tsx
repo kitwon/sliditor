@@ -1,14 +1,5 @@
 /* eslint react/jsx-props-no-spreading: off */
-import React, {
-  ReactElement,
-  FC,
-  cloneElement,
-  useState,
-  useEffect,
-  useRef,
-  CSSProperties,
-  useCallback
-} from 'react'
+import React, { ReactElement, FC, cloneElement, useState, useEffect, useCallback } from 'react'
 import classNames from 'classnames'
 import DragCore, { DragCoreProps } from './DragCore'
 import {
@@ -73,7 +64,8 @@ const Draggable: FC<DraggableProps> = (props) => {
     onDrag
   } = props
 
-  const domNode = useRef<HTMLElement>(null)
+  // const domNode = useRef<HTMLElement>(null)
+  // const [domNode, setDomNode] = useState<HTMLElement | null>(null)
 
   const [stateRef, setState, refState] = useReferenceState({
     dragging: false,
@@ -83,7 +75,8 @@ const Draggable: FC<DraggableProps> = (props) => {
     prevPropsPos: { ...position },
     slackX: 0,
     slackY: 0,
-    isElementSVG: false
+    isElementSVG: false,
+    domNode: null as HTMLElement | null
   })
   const [childProps, setChildProps] = useState({
     style: { ...children.props.style },
@@ -95,11 +88,11 @@ const Draggable: FC<DraggableProps> = (props) => {
   useEffect(() => {
     if (
       typeof window.SVGAElement !== 'undefined' &&
-      domNode.current instanceof window.SVGAElement
+      stateRef.current.domNode instanceof window.SVGAElement
     ) {
       setState({ ...stateRef.current, isElementSVG: true })
     }
-  }, [domNode])
+  }, [stateRef])
 
   useEffect(() => {
     const state = stateRef.current
@@ -176,9 +169,9 @@ const Draggable: FC<DraggableProps> = (props) => {
       newState.x += state.slackX
       newState.y += state.slackY
 
-      if (domNode.current) {
+      if (state.domNode) {
         const [newStateX, newStateY] = getBoundPosition(
-          domNode.current,
+          state.domNode,
           bounds,
           newState.x,
           newState.y
@@ -230,11 +223,9 @@ const Draggable: FC<DraggableProps> = (props) => {
   return (
     <DragCore
       {...{ ...props, onStart: handleDragStart, onDrag: handleDrag, onStop: handleDragStop }}
-      domNode={domNode}
-      ref={domNode}
-      // domRef={(instace) => {
-      //   domNode.current = instace.current
-      // }}
+      domRef={(instace) => {
+        setState({ ...stateRef.current, domNode: instace })
+      }}
     >
       {cloneElement(children, {
         ...childProps

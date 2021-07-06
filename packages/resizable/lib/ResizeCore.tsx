@@ -6,7 +6,8 @@ import React, {
   useCallback,
   SyntheticEvent,
   useRef,
-  CSSProperties
+  CSSProperties,
+  useState
 } from 'react'
 import { DragCore, Axis, DragCoreProps, DraggableData } from '@sliditor/draggable'
 import { ResizeHandleAxis, ResizeEvent } from './types'
@@ -47,7 +48,7 @@ const ResizeCore: FC<ResizeProps> = (props) => {
     maxConstraints = [Infinity, Infinity]
   } = props
 
-  const lastHandleRect = useRef<DOMRect>(null)
+  const [lastHandleRect, setLastHandle] = useState<DOMRect | null>(null)
   const slack = useRef<[number, number] | null>(null)
 
   const renderResizeHandle = useCallback(
@@ -105,7 +106,8 @@ const ResizeCore: FC<ResizeProps> = (props) => {
   )
 
   const resetData = () => {
-    lastHandleRect.current = null
+    setLastHandle(null)
+    // lastHandleRect.current = null
     slack.current = null
   }
 
@@ -126,18 +128,18 @@ const ResizeCore: FC<ResizeProps> = (props) => {
       const axisHorizontal = handleAxis[handleAxis.length - 1]
 
       const handleRect = dragData.node.getBoundingClientRect()
-      if (lastHandleRect.current !== null) {
+      if (lastHandleRect !== null) {
         if (axisHorizontal === 'w') {
-          const deltaLeftSinceLast = handleRect.left - lastHandleRect.current.left
+          const deltaLeftSinceLast = handleRect.left - lastHandleRect.left
           deltaX += deltaLeftSinceLast
         }
         if (axisVertical === 'n') {
-          const deltaTopSinceLast = handleRect.top - lastHandleRect.current.top
+          const deltaTopSinceLast = handleRect.top - lastHandleRect.top
           deltaY += deltaTopSinceLast
         }
       }
 
-      lastHandleRect.current = handleRect
+      setLastHandle(handleRect)
 
       if (axisHorizontal === 'w') deltaX = -deltaX
       if (axisHorizontal === 'n') deltaY = -deltaY
@@ -159,10 +161,11 @@ const ResizeCore: FC<ResizeProps> = (props) => {
     }
   }
 
+  if (!children) return null
   return cloneElement(children, {
     className: `${className || ''} rc-resizable`,
     children: [
-      ...children.props.children,
+      ...children?.props.children,
       ...resizeHandles.map((pos) => (
         <DragCore
           {...draggableOpts}

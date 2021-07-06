@@ -5,10 +5,9 @@ import {
   ReactElement,
   useRef,
   useEffect,
-  RefObject,
   useCallback,
   SyntheticEvent,
-  forwardRef
+  RefObject
 } from 'react'
 import {
   matchSelectorAndParent,
@@ -42,7 +41,7 @@ export interface DragCoreProps {
   enableUserSelect?: boolean
   scale?: number
   grid?: [number, number]
-  domNode: RefObject<HTMLElement>
+  domRef?: (instance: HTMLElement) => any
   onMousedown?: (e: SyntheticEvent) => void
   /**
    * Emit when draggable start, if return `false`,
@@ -73,7 +72,7 @@ const events = {
 
 let dragEvent = events.mouse
 
-const DragCore = forwardRef<Node, DragCoreProps>((props, ref) => {
+const DragCore: FC<DragCoreProps> = (props) => {
   const {
     children,
     allowAnyClick,
@@ -81,7 +80,7 @@ const DragCore = forwardRef<Node, DragCoreProps>((props, ref) => {
     handle,
     cancel,
     grid,
-    domNode,
+    domRef,
     scale = 1,
     enableUserSelect = true,
     onStart = () => 0,
@@ -98,7 +97,7 @@ const DragCore = forwardRef<Node, DragCoreProps>((props, ref) => {
 
   // ref never use as function
   // const domNode = ref as MutableRefObject<HTMLElement>
-  // const domNode = useRef<HTMLElement>(null)
+  const domNode = useRef<HTMLElement>(null)
 
   const handleDrag = useCallback(
     (e: MouseTouchEvent) => {
@@ -176,7 +175,7 @@ const DragCore = forwardRef<Node, DragCoreProps>((props, ref) => {
 
       const node = domNode.current
       const ownerDocument = node?.ownerDocument
-      if (!node || !ownerDocument || !ownerDocument.defaultView) {
+      if (!node || !ownerDocument || !ownerDocument.body || !ownerDocument.defaultView) {
         throw new Error('Draggable not mounted on DragStart')
       }
 
@@ -243,13 +242,8 @@ const DragCore = forwardRef<Node, DragCoreProps>((props, ref) => {
   }, [])
 
   useEffect(() => {
-    // if (ref) {
-    //   addEvent(ref, events.touch.start, onTouchStart as EventListener, {
-    //     passive: false
-    //   })
-    // }
     if (domNode.current) {
-      // if (isFunction(ref)) domRef?.(domNode)
+      domRef?.(domNode.current)
       addEvent(domNode.current, events.touch.start, onTouchStart as EventListener, {
         passive: false
       })
@@ -271,11 +265,11 @@ const DragCore = forwardRef<Node, DragCoreProps>((props, ref) => {
   }, [domNode])
 
   return cloneElement(children, {
-    ref,
+    ref: domNode,
     onMouseDown,
     onMouseUp,
     onTouchEnd
   })
-})
+}
 
 export default DragCore

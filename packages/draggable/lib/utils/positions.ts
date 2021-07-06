@@ -73,12 +73,12 @@ export function getBoundPosition(
 
 export function getContnrolPosition(
   e: MouseTouchEvent,
-  draggableRef: RefObject<HTMLElement>,
+  draggableRef?: RefObject<HTMLElement>,
   touchIndentifier?: number,
   scale?: any
 ) {
   const touchObj = typeof touchIndentifier === 'number' ? getTouch(e, touchIndentifier) : null
-  if (!draggableRef.current || (typeof touchIndentifier === 'number' && !touchObj)) return null
+  if (!draggableRef?.current || (typeof touchIndentifier === 'number' && !touchObj)) return null
 
   const node = draggableRef.current
 

@@ -23,6 +23,7 @@ const Resizable: FC<ResizeProps> = (props) => {
 
   const handleResize: ResizeEvent = (e, data) => {
     const { size } = data
+    console.log(size)
     // eslint-disable-next-line no-unused-expressions
     e.persist && e.persist()
     setState({ ...state, ...size })
