@@ -1,5 +1,187 @@
 import React, { useRef, useCallback, useEffect, cloneElement, useState } from 'react';
 
+function ownKeys$1(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+
+    if (enumerableOnly) {
+      symbols = symbols.filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+    }
+
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2$1(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys$1(Object(source), true).forEach(function (key) {
+        _defineProperty$1(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys$1(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+function _defineProperty$1(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _slicedToArray$1(arr, i) {
+  return _arrayWithHoles$1(arr) || _iterableToArrayLimit$1(arr, i) || _unsupportedIterableToArray$1(arr, i) || _nonIterableRest$1();
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray$1(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray$1(arr);
+}
+
+function _arrayWithHoles$1(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+}
+
+function _iterableToArrayLimit$1(arr, i) {
+  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
+
+  if (_i == null) return;
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+
+  var _s, _e;
+
+  try {
+    for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
+function _unsupportedIterableToArray$1(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray$1(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray$1(o, minLen);
+}
+
+function _arrayLikeToArray$1(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _nonIterableRest$1() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
 
@@ -51,24 +233,6 @@ function _defineProperty(obj, key, value) {
   }
 
   return obj;
-}
-
-function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
 }
 
 function _slicedToArray(arr, i) {
@@ -130,8 +294,9 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
-var classnames = {exports: {}};
-
+var classnames = {
+  exports: {}
+};
 /*!
   Copyright (c) 2018 Jed Watson.
   Licensed under the MIT License (MIT), see
@@ -141,7 +306,6 @@ var classnames = {exports: {}};
 (function (module) {
   /* global define */
   (function () {
-
     var hasOwn = {}.hasOwnProperty;
 
     function classNames() {
@@ -187,7 +351,7 @@ var classnames = {exports: {}};
   })();
 })(classnames);
 
-var classNames = classnames.exports;
+classnames.exports;
 
 function find(array, cb) {
   if (!Array.isArray(array)) return undefined;
@@ -198,26 +362,19 @@ function find(array, cb) {
 
   return undefined;
 }
+
 function isFunction(func) {
   return typeof func === 'function' || Object.prototype.toString.call(func) === '[object Function]';
 }
+
 function isNum(number) {
   return typeof number === 'number' && !Number.isNaN(number);
 }
 
-function _int(number) {
-  return parseInt(number, 10);
-}
 function snapToGrid(grid, pendingX, pendingY) {
   var x = Math.round(pendingX / grid[0]) * grid[0];
   var y = Math.round(pendingY / grid[1]) * grid[1];
   return [x, y];
-}
-function canDragX(axis) {
-  return axis === 'both' || axis === 'x';
-}
-function canDragY(axis) {
-  return axis === 'both' || axis === 'y';
 }
 
 var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
@@ -243,6 +400,7 @@ function kebabToTitleCase(str) {
 function browserPrefixToKey(prop, prefix) {
   return prefix ? "".concat(prefix).concat(kebabToTitleCase(prop)) : prop;
 }
+
 function getPrefix() {
   var prop = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'transform';
   if (typeof window === 'undefined' || typeof window.document === 'undefined') return '';
@@ -257,7 +415,8 @@ function getPrefix() {
 
   return '';
 }
-var browserPrefix = getPrefix();
+
+getPrefix();
 
 function addClass(el, classname) {
   if (el.classList) {
@@ -267,6 +426,7 @@ function addClass(el, classname) {
     el.className += "".concat(classname);
   }
 }
+
 function removeClass(el, classname) {
   if (el.classList) {
     el.classList.remove(classname);
@@ -275,6 +435,7 @@ function removeClass(el, classname) {
     el.className = el.className.replace(new RegExp("(?:^|\\s)".concat(classname, "(?!\\S)"), 'g'), '');
   }
 }
+
 function addEvent(el, event, handler, inputOptions) {
   if (!el) return;
 
@@ -293,6 +454,7 @@ function addEvent(el, event, handler, inputOptions) {
     el["on".concat(event)] = handler;
   }
 }
+
 function removeEvent(el, event, handler, inputOptions) {
   if (!el) return;
 
@@ -311,7 +473,9 @@ function removeEvent(el, event, handler, inputOptions) {
     el["on".concat(event)] = null;
   }
 }
+
 var matchsSelectorFunc = '';
+
 function matchSelector(el, selector) {
   if (!matchsSelectorFunc) {
     matchsSelectorFunc = find(['matches', 'webkitMatchesSelector', 'mozMatchesSelector', 'msMatchesSelector', 'oMatchesSelector'], function (method) {
@@ -322,6 +486,7 @@ function matchSelector(el, selector) {
   if (!isFunction(el[matchsSelectorFunc])) return false;
   return el[matchsSelectorFunc](selector);
 }
+
 function matchSelectorAndParent(el, selector, baseNode) {
   var node = el;
 
@@ -333,6 +498,7 @@ function matchSelectorAndParent(el, selector, baseNode) {
 
   return false;
 }
+
 function getTouch(e, indentifier) {
   return e.targetTouches && find(e.targetTouches, function (t) {
     return indentifier === t.indentifier;
@@ -340,11 +506,13 @@ function getTouch(e, indentifier) {
     return indentifier === t.indentifier;
   });
 }
+
 function getTouchIdentifier(e) {
   if (e.targetTouches && e.targetTouches[0]) return e.targetTouches[0].identifier;
   if (e.changedTouches && e.changedTouches[0]) return e.changedTouches[0].identifier;
   return undefined;
 }
+
 function offsetFromParent(_ref, offsetParent, scale) {
   var clientX = _ref.clientX,
       clientY = _ref.clientY;
@@ -360,6 +528,7 @@ function offsetFromParent(_ref, offsetParent, scale) {
     y: y
   };
 }
+
 function addUserSelectStyles(doc) {
   if (!doc) return;
   var styleEl = doc.getElementById('draggable-style-el');
@@ -375,6 +544,7 @@ function addUserSelectStyles(doc) {
 
   if (doc.body) addClass(doc.body, 'draggable-transparent-selection');
 }
+
 function removeUserSelectStyle(doc) {
   if (!doc) return;
 
@@ -394,127 +564,7 @@ function removeUserSelectStyle(doc) {
 
   } catch (e) {}
 }
-function outerWidth(node) {
-  var _node$ownerDocument, _node$ownerDocument$d;
 
-  var width = node.clientWidth;
-  var computedStyle = (_node$ownerDocument = node.ownerDocument) === null || _node$ownerDocument === void 0 ? void 0 : (_node$ownerDocument$d = _node$ownerDocument.defaultView) === null || _node$ownerDocument$d === void 0 ? void 0 : _node$ownerDocument$d.getComputedStyle(node);
-
-  if (computedStyle) {
-    width += _int(computedStyle.borderLeftWidth);
-    width += _int(computedStyle.borderRightWidth);
-  }
-
-  return width;
-}
-function outerHeight(node) {
-  var _node$ownerDocument2, _node$ownerDocument2$;
-
-  var height = node.clientHeight;
-  var computedStyle = (_node$ownerDocument2 = node.ownerDocument) === null || _node$ownerDocument2 === void 0 ? void 0 : (_node$ownerDocument2$ = _node$ownerDocument2.defaultView) === null || _node$ownerDocument2$ === void 0 ? void 0 : _node$ownerDocument2$.getComputedStyle(node);
-
-  if (computedStyle) {
-    height += _int(computedStyle.borderTopWidth) + _int(computedStyle.borderBottomWidth);
-    height += _int(computedStyle.borderBottomWidth);
-  }
-
-  return height;
-}
-function innerWidth(node) {
-  var _node$ownerDocument3, _node$ownerDocument3$;
-
-  var width = node.clientWidth;
-  var computedStyle = (_node$ownerDocument3 = node.ownerDocument) === null || _node$ownerDocument3 === void 0 ? void 0 : (_node$ownerDocument3$ = _node$ownerDocument3.defaultView) === null || _node$ownerDocument3$ === void 0 ? void 0 : _node$ownerDocument3$.getComputedStyle(node);
-
-  if (computedStyle) {
-    width -= _int(computedStyle.paddingLeft);
-    width -= _int(computedStyle.paddingRight);
-  }
-
-  return width;
-}
-function innerHeight(node) {
-  var _node$ownerDocument4, _node$ownerDocument4$;
-
-  var height = node.clientHeight;
-  var computedStyle = (_node$ownerDocument4 = node.ownerDocument) === null || _node$ownerDocument4 === void 0 ? void 0 : (_node$ownerDocument4$ = _node$ownerDocument4.defaultView) === null || _node$ownerDocument4$ === void 0 ? void 0 : _node$ownerDocument4$.getComputedStyle(node);
-
-  if (computedStyle) {
-    height -= _int(computedStyle.paddingTop);
-    height -= _int(computedStyle.paddingBottom);
-  }
-
-  return height;
-}
-function getTranslation(_ref2, positionOffset) {
-  var x = _ref2.x,
-      y = _ref2.y;
-  var unit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'px';
-  var translation = "translate(".concat(x).concat(unit, ", ").concat(y).concat(unit, ")");
-
-  if (positionOffset) {
-    var defaultX = "".concat(typeof positionOffset.x === 'string' ? positionOffset.x : "".concat(positionOffset.x).concat(unit));
-    var defaultY = "".concat(typeof positionOffset.y === 'string' ? positionOffset.y : "".concat(positionOffset.y).concat(unit));
-    translation = "translate(".concat(defaultX, ", ").concat(defaultY, ")").concat(translation);
-  }
-
-  return translation;
-}
-function createCSSTransform(controlPos, positionOffset) {
-  var translation = getTranslation(controlPos, positionOffset, 'px');
-  return _defineProperty({}, browserPrefixToKey('transform', browserPrefix), translation);
-}
-function createSVGTransform(controlPos, positionOffset) {
-  var translation = getTranslation(controlPos, positionOffset, '');
-  return translation;
-}
-
-function cloneBounds(bounds) {
-  return {
-    left: bounds.left,
-    right: bounds.right,
-    top: bounds.top,
-    bottom: bounds.bottom
-  };
-}
-
-function getBoundPosition(node, bounds, x, y) {
-  if (!bounds) return [x, y];
-  var newX = x;
-  var newY = y;
-  var newBounds = typeof bounds === 'string' ? {} : cloneBounds(bounds);
-  var ownerDocument = node.ownerDocument;
-  var ownerWindow = ownerDocument.defaultView;
-
-  if (typeof bounds === 'string' && ownerWindow) {
-    var boundNode;
-
-    if (bounds === 'parent') {
-      boundNode = node.parentNode;
-    } else {
-      boundNode = ownerDocument.querySelector(bounds);
-    }
-
-    if (!(boundNode instanceof ownerWindow.HTMLElement)) {
-      throw new Error("Bounds selector \"".concat(bounds, "\" not exist."));
-    }
-
-    var nodeStyle = ownerWindow.getComputedStyle(node);
-    var boundNodeStyle = ownerWindow.getComputedStyle(boundNode);
-    newBounds = {
-      left: -node.offsetLeft + _int(boundNodeStyle.paddingLeft) + _int(nodeStyle.marginLeft),
-      top: -node.offsetTop + _int(boundNodeStyle.paddingTop) + _int(nodeStyle.marginTop),
-      right: innerWidth(boundNode) - outerWidth(node) - node.offsetLeft + _int(boundNodeStyle.paddingRight) - _int(nodeStyle.marginRight),
-      bottom: innerHeight(boundNode) - outerHeight(node) - node.offsetTop + _int(boundNodeStyle.paddingBottom) - _int(nodeStyle.marginBottom)
-    };
-  }
-
-  if (typeof newBounds.right === 'number' && isNum(newBounds.right)) newX = Math.min(newX, newBounds.right);
-  if (typeof newBounds.bottom === 'number' && isNum(newBounds.bottom)) newY = Math.min(newY, newBounds.bottom);
-  if (typeof newBounds.left === 'number' && isNum(newBounds.left)) newX = Math.max(newX, newBounds.left);
-  if (typeof newBounds.top === 'number' && isNum(newBounds.top)) newY = Math.max(newY, newBounds.top);
-  return [newX, newY];
-}
 function getContnrolPosition(e, draggableRef, touchIndentifier, scale) {
   var touchObj = typeof touchIndentifier === 'number' ? getTouch(e, touchIndentifier) : null;
   if (!(draggableRef !== null && draggableRef !== void 0 && draggableRef.current) || typeof touchIndentifier === 'number' && !touchObj) return null;
@@ -522,6 +572,7 @@ function getContnrolPosition(e, draggableRef, touchIndentifier, scale) {
   var offsetParent = draggableRef.current.offsetParent || node.offsetParent || node.ownerDocument.body;
   return offsetFromParent(touchObj || e, offsetParent, scale);
 }
+
 function createCoreData(ref, state, x, y) {
   var isStart = !isNum(state.lastX);
   var node = ref.current;
@@ -546,21 +597,6 @@ function createCoreData(ref, state, x, y) {
     lastY: state.lastY,
     x: x,
     y: y
-  };
-}
-function createDraggableData(state) {
-  var coreData = state.coreData,
-      x = state.x,
-      y = state.y,
-      scale = state.scale;
-  return {
-    node: coreData.node,
-    x: x + coreData.deltaX / scale,
-    y: y + coreData.deltaY / scale,
-    deltaX: coreData.deltaX / scale,
-    deltaY: coreData.deltaY / scale,
-    lastX: x,
-    lastY: y
   };
 }
 
@@ -634,7 +670,6 @@ var DragCore = function DragCore(props) {
     }
 
     var coreEvent = createCoreData(domNode, state, x, y);
-
     var shouldUpdate = onDrag(e, coreEvent);
 
     if (shouldUpdate === false) {
@@ -669,6 +704,7 @@ var DragCore = function DragCore(props) {
     if (domNode.current && enableUserSelect) {
       removeUserSelectStyle(domNode.current.ownerDocument);
     }
+
     stateRef.current = _objectSpread2(_objectSpread2({}, state), {}, {
       dragging: false,
       lastX: NaN,
@@ -771,203 +807,245 @@ var DragCore = function DragCore(props) {
   });
 };
 
-function useReferenceState(initialValue) {
-  var _useState = useState(initialValue),
-      _useState2 = _slicedToArray(_useState, 2),
-      state = _useState2[0],
-      setState = _useState2[1];
-
-  var reference = useRef(state);
-
-  var setRef = function setRef(value) {
-    reference.current = value;
-    setState(value);
-  };
-
-  return [reference, setRef, state];
-}
-
-var Draggable = function Draggable(props) {
-  var _position$x, _position$y;
-
-  var children = props.children,
-      className = props.className,
-      _props$draggedClassNa = props.draggedClassName,
-      draggedClassName = _props$draggedClassNa === void 0 ? 'dragged' : _props$draggedClassNa,
-      _props$draggingClassN = props.draggingClassName,
-      draggingClassName = _props$draggingClassN === void 0 ? 'dragging' : _props$draggingClassN,
-      position = props.position,
-      bounds = props.bounds,
-      positionOffset = props.positionOffset,
-      _props$scale = props.scale,
-      scale = _props$scale === void 0 ? 1 : _props$scale,
+var ResizeCore = function ResizeCore(props) {
+  var className = props.className,
+      children = props.children,
+      handle = props.handle,
+      draggableOpts = props.draggableOpts,
+      lockAspectRatio = props.lockAspectRatio,
       _props$axis = props.axis,
       axis = _props$axis === void 0 ? 'both' : _props$axis,
-      _props$startPosition = props.startPosition,
-      startPosition = _props$startPosition === void 0 ? {
-    x: 0,
-    y: 0
-  } : _props$startPosition,
-      onStop = props.onStop,
-      onStart = props.onStart,
-      onDrag = props.onDrag; // const domNode = useRef<HTMLElement>(null)
-  // const [domNode, setDomNode] = useState<HTMLElement | null>(null)
+      _props$resizeHandles = props.resizeHandles,
+      resizeHandles = _props$resizeHandles === void 0 ? ['se'] : _props$resizeHandles,
+      _props$transformScale = props.transformScale,
+      transformScale = _props$transformScale === void 0 ? 1 : _props$transformScale,
+      _props$minConstraints = props.minConstraints,
+      minConstraints = _props$minConstraints === void 0 ? [20, 20] : _props$minConstraints,
+      _props$maxConstraints = props.maxConstraints,
+      maxConstraints = _props$maxConstraints === void 0 ? [Infinity, Infinity] : _props$maxConstraints; // const [lastHandleRect, setLastHandle] = useState<DOMRect | null>(null)
 
-  var _useReferenceState = useReferenceState({
-    dragging: false,
-    dragged: false,
-    x: (_position$x = position === null || position === void 0 ? void 0 : position.x) !== null && _position$x !== void 0 ? _position$x : startPosition.x,
-    y: (_position$y = position === null || position === void 0 ? void 0 : position.y) !== null && _position$y !== void 0 ? _position$y : startPosition.y,
-    prevPropsPos: _objectSpread2({}, position),
-    slackX: 0,
-    slackY: 0,
-    isElementSVG: false,
-    domNode: null
-  }),
-      _useReferenceState2 = _slicedToArray(_useReferenceState, 3),
-      stateRef = _useReferenceState2[0],
-      setState = _useReferenceState2[1],
-      refState = _useReferenceState2[2];
+  var lastHandleRect = useRef(null);
+  var slack = useRef(null);
+  var state = useRef({
+    width: props.width,
+    height: props.height
+  });
+  var renderResizeHandle = useCallback(function (handleAxis) {
+    if (handle) {
+      if (typeof handle === 'function') {
+        return handle(handleAxis);
+      }
 
-  var _useState = useState({
-    style: _objectSpread2({}, children.props.style),
-    className: '',
-    transform: ''
-  }),
-      _useState2 = _slicedToArray(_useState, 2),
-      childProps = _useState2[0],
-      setChildProps = _useState2[1]; // Effects
-
-
-  useEffect(function () {
-    if (typeof window.SVGAElement !== 'undefined' && stateRef.current.domNode instanceof window.SVGAElement) {
-      setState(_objectSpread2(_objectSpread2({}, stateRef.current), {}, {
-        isElementSVG: true
-      }));
-    }
-  }, [stateRef]);
-  useEffect(function () {
-    var _classNames;
-
-    var state = stateRef.current;
-    var controlled = Boolean(position);
-    var draggable = !controlled || state.dragging;
-    var validatePosition = position || startPosition;
-    var transformOpts = {
-      x: canDragX(axis) && draggable ? state.x : validatePosition.x,
-      y: canDragY(axis) && draggable ? state.y : validatePosition.y
-    };
-    var svgTransform = null;
-    var cssTransform = {};
-
-    if (state.isElementSVG) {
-      svgTransform = createSVGTransform(transformOpts, positionOffset);
-    } else {
-      cssTransform = createCSSTransform(transformOpts, positionOffset);
+      return handle;
     }
 
-    var classnames = classNames(className || '', children.props.className || '', (_classNames = {}, _defineProperty(_classNames, draggedClassName, state.dragged), _defineProperty(_classNames, draggingClassName, state.dragging), _classNames));
-    setChildProps({
-      style: _objectSpread2(_objectSpread2({}, childProps.style), cssTransform),
-      className: classnames,
-      transform: svgTransform || ''
+    return /*#__PURE__*/React.createElement("span", {
+      className: "rc-resizable-handle is-".concat(handleAxis)
     });
-  }, [refState]);
-  useEffect(function () {
-    if (position && !stateRef.current.dragging) {
-      var x = position.x,
-          y = position.y;
-      setState(_objectSpread2(_objectSpread2({}, stateRef.current), {}, {
-        x: x,
-        y: y
-      }));
-    }
-  }, [position]); // Actions
+  }, [handle]);
 
-  var handleDragStart = useCallback(function (e, coreData) {
-    var state = stateRef.current;
-    var sholdStart = onStart && onStart(e, createDraggableData({
-      x: state.x,
-      y: state.y,
-      scale: scale,
-      coreData: coreData
-    }));
-    if (sholdStart === false) return false;
-    setState(_objectSpread2(_objectSpread2({}, state), {}, {
-      dragging: true,
-      dragged: true
-    }));
-    return undefined;
-  }, [stateRef]);
-  var handleDrag = useCallback(function (e, coreData) {
-    var state = stateRef.current;
-    if (!state.dragging) return undefined;
-    var uiData = createDraggableData({
-      x: state.x,
-      y: state.y,
-      scale: scale,
-      coreData: coreData
-    });
-    var newState = {
-      x: uiData.x,
-      y: uiData.y,
-      slackX: 0,
-      slackY: 0
-    }; // if (bounds) {
+  var runConstraints = function runConstraints(w, h) {
+    var min = minConstraints,
+        max = maxConstraints;
+    if (!min && !max) return [w, h]; // If constraining to min and max, we need to also fit width and height to aspect ratio.
 
-    var x = newState.x,
-        y = newState.y;
-    newState.x += state.slackX;
-    newState.y += state.slackY;
+    if (lockAspectRatio) {
+      // const resizingHorizontally = h === props.height
+      var resizingHorizontally = h === state.current.height;
 
-    if (state.domNode) {
-      var _getBoundPosition = getBoundPosition(state.domNode, bounds, newState.x, newState.y),
-          _getBoundPosition2 = _slicedToArray(_getBoundPosition, 2),
-          newStateX = _getBoundPosition2[0],
-          newStateY = _getBoundPosition2[1];
+      if (resizingHorizontally) {
+        // const ratio = props.width / props.height
+        var ratio = state.current.width / state.current.height;
+        h = w / ratio;
+        w = h * ratio;
+      } else {
+        // Take into account vertical resize with N/S handles on locked aspect
+        // ratio. Calculate the change height-first, instead of width-first
+        var _ratio = state.current.height / state.current.width;
 
-      newState.x = newStateX;
-      newState.y = newStateY;
-      newState.slackX = state.slackX + (x - newState.x);
-      newState.slackY = state.slackY + (y - newState.y);
+        w = h / _ratio;
+        h = w * _ratio;
+      }
     }
 
-    uiData.x = newState.x;
-    uiData.y = newState.y;
-    uiData.deltaX = newState.x - state.x;
-    uiData.deltaY = newState.y - state.y; // }
+    var oldW = w,
+        oldH = h; // Add slack to the values used to calculate bound position. This will ensure that if
+    // we start removing slack, the element won't react to it right away until it's been
+    // completely removed.
 
-    var shouldUpdate = onDrag && onDrag(e, uiData);
-    if (shouldUpdate === false) return false;
-    setState(_objectSpread2(_objectSpread2({}, state), newState));
-    return undefined;
-  }, [stateRef]);
-  var handleDragStop = useCallback(function (e, coreData) {
-    var state = stateRef.current;
-    if (!state.dragging) return undefined;
-    var shouldContinune = onStop && onStop(e, coreData);
-    if (shouldContinune === false) return false;
-    var newState = {
-      dragging: false,
-      slackX: 0,
-      slackY: 0
+    var _ref = slack.current || [0, 0],
+        _ref2 = _slicedToArray$1(_ref, 2),
+        slackW = _ref2[0],
+        slackH = _ref2[1];
+
+    w += slackW;
+    h += slackH;
+
+    if (min) {
+      w = Math.max(min[0], w);
+      h = Math.max(min[1], h);
+    }
+
+    if (max) {
+      w = Math.min(max[0], w);
+      h = Math.min(max[1], h);
+    } // If the width or height changed, we must have introduced some slack. Record it for the next iteration.
+
+
+    slack.current = [slackW + (oldW - w), slackH + (oldH - h)];
+    return [w, h];
+  };
+
+  var resetData = function resetData() {
+    lastHandleRect.current = null;
+    slack.current = null;
+  };
+
+  var resizeHandler = function resizeHandler(handleName, handleAxis) {
+    return function (e, dragData) {
+      var deltaX = dragData.deltaX / transformScale;
+      var deltaY = dragData.deltaY / transformScale;
+      if (handleName === 'onResizeStart') resetData();
+      var canDragX = (axis === 'both' || axis === 'x') && handleAxis !== 'n' && handleAxis !== 's';
+      var canDragY = (axis === 'both' || axis === 'y') && handleAxis !== 'e' && handleAxis !== 'w';
+      if (!canDragX && !canDragY) return;
+      var axisVertical = handleAxis[0];
+      var axisHorizontal = handleAxis[handleAxis.length - 1];
+      var handleRect = dragData.node.getBoundingClientRect();
+
+      if (lastHandleRect.current !== null) {
+        if (axisHorizontal === 'w') {
+          var deltaLeftSinceLast = handleRect.left - lastHandleRect.current.left;
+          deltaX += deltaLeftSinceLast;
+        }
+
+        if (axisVertical === 'n') {
+          var deltaTopSinceLast = handleRect.top - lastHandleRect.current.top;
+          deltaY += deltaTopSinceLast;
+        }
+      }
+
+      lastHandleRect.current = handleRect;
+      if (axisHorizontal === 'w') deltaX = -deltaX;
+      if (axisHorizontal === 'n') deltaY = -deltaY; // let width = props.width + (canDragX ? deltaX / transformScale : 0)
+      // let height = props.height + (canDragY ? deltaY / transformScale : 0)
+
+      var width = state.current.width + (canDragX ? deltaX / transformScale : 0);
+      var height = state.current.height + (canDragY ? deltaY / transformScale : 0);
+
+      var _runConstraints = runConstraints(width, height);
+
+      var _runConstraints2 = _slicedToArray$1(_runConstraints, 2);
+
+      width = _runConstraints2[0];
+      height = _runConstraints2[1];
+      var demensionsChanged = width !== state.current.width || height !== state.current.height;
+      state.current = {
+        width: width,
+        height: height
+      };
+      var cb = typeof props[handleName] === 'function' ? props[handleName] : null;
+      var shouldSkipCb = handleName === 'onResize' && !demensionsChanged;
+
+      if (cb && !shouldSkipCb) {
+        if (typeof e.persist === 'function') e.persist(); // cb(e, { node: dragData.node, size: { width, height }, handle: handleAxis })
+
+        cb(e, {
+          node: dragData.node,
+          size: state.current,
+          handle: handleAxis
+        });
+      }
+
+      if (handleName === 'onResizeStop') resetData();
     };
-    setState(_objectSpread2(_objectSpread2({}, state), newState));
-    return undefined;
-  }, [stateRef]);
-  return /*#__PURE__*/React.createElement(DragCore, _extends({}, _objectSpread2(_objectSpread2({}, props), {}, {
-    onStart: handleDragStart,
-    onDrag: handleDrag,
-    onStop: handleDragStop
-  }), {
-    domRef: function domRef(instace) {
-      setState(_objectSpread2(_objectSpread2({}, stateRef.current), {}, {
-        domNode: instace
-      }));
-    }
-  }), /*#__PURE__*/cloneElement(children, _objectSpread2({}, childProps)));
+  };
+
+  if (!children) return null;
+  return /*#__PURE__*/cloneElement(children, {
+    className: "".concat(className || '', " rc-resizable"),
+    children: [children === null || children === void 0 ? void 0 : children.props.children].concat(_toConsumableArray(resizeHandles.map(function (pos) {
+      return /*#__PURE__*/React.createElement(DragCore, _extends({}, draggableOpts, {
+        key: "resiableHandle-".concat(pos),
+        onStop: resizeHandler('onResizeStop', pos),
+        onStart: resizeHandler('onResizeStart', pos),
+        onDrag: resizeHandler('onResize', pos)
+      }), renderResizeHandle(pos));
+    })))
+  });
 };
 
-export default Draggable;
-export { DragCore };
-//# sourceMappingURL=draggable.esm.js.map
+var _excluded = ["handle", "handleSize", "onResize", "onResizeStart", "onResizeStop", "draggableOpts", "minConstraints", "maxConstraints", "lockAspectRatio", "axis", "width", "height", "resizeHandles", "style", "transformScale"];
+
+var Resizable = function Resizable(props) {
+  // const { width, height, style, onResize, children, ...resizeProps } = props
+  var handle = props.handle,
+      handleSize = props.handleSize,
+      onResize = props.onResize,
+      onResizeStart = props.onResizeStart,
+      onResizeStop = props.onResizeStop,
+      draggableOpts = props.draggableOpts,
+      minConstraints = props.minConstraints,
+      maxConstraints = props.maxConstraints,
+      lockAspectRatio = props.lockAspectRatio,
+      axis = props.axis,
+      width = props.width,
+      height = props.height,
+      resizeHandles = props.resizeHandles,
+      style = props.style,
+      transformScale = props.transformScale,
+      extraProps = _objectWithoutProperties(props, _excluded);
+
+  var _useState = useState({
+    width: width,
+    height: height,
+    propsWidth: width,
+    propsHeight: height
+  }),
+      _useState2 = _slicedToArray$1(_useState, 2),
+      state = _useState2[0],
+      setState = _useState2[1]; // const state = useRef({
+  //   width,
+  //   height,
+  //   propsWidth: width,
+  //   propsHeight: height
+  // })
+
+
+  var handleResize = useCallback(function (e, data) {
+    var size = data.size;
+
+    if (onResize) {
+      var _e$persist;
+
+      onResize(e, data);
+      (_e$persist = e.persist) === null || _e$persist === void 0 ? void 0 : _e$persist.call(e);
+    }
+
+    setState(size); // state.current = { ...state.current, ...size }
+  }, []);
+  return /*#__PURE__*/React.createElement(ResizeCore, {
+    axis: axis,
+    draggableOpts: draggableOpts,
+    handle: handle,
+    handleSize: handleSize,
+    height: state.height,
+    lockAspectRatio: lockAspectRatio,
+    maxConstraints: maxConstraints,
+    minConstraints: minConstraints,
+    onResizeStart: onResizeStart,
+    onResize: handleResize,
+    onResizeStop: onResizeStop,
+    resizeHandles: resizeHandles,
+    transformScale: transformScale,
+    width: state.width
+  }, /*#__PURE__*/React.createElement("div", _extends({}, extraProps, {
+    style: _objectSpread2$1(_objectSpread2$1({}, style), {}, {
+      width: "".concat(state.width, "px"),
+      height: "".concat(state.height, "px")
+    })
+  })));
+};
+
+export default Resizable;
+//# sourceMappingURL=resizable.esm.js.map

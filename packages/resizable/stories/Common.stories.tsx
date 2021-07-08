@@ -10,7 +10,7 @@ export default {
 export const common = (props: Partial<ResizeProps>) => {
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <Resizable {...props} width={110} height={110}>
+    <Resizable {...props} width={200} height={200}>
       <span role="img" aria-label="so cool" style={{ verticalAlign: 'middle' }}>
         😀 😎
         <br />

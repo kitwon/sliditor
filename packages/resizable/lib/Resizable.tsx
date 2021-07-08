@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { FC, useState } from 'react'
+import React, { FC, useCallback, useRef, useState } from 'react'
 import ResizeCore, { ResizeProps } from './ResizeCore'
 import { ResizeEvent } from './types'
 
@@ -11,33 +11,71 @@ interface SizeState {
 }
 
 const Resizable: FC<ResizeProps> = (props) => {
-  const { width, height } = props
+  // const { width, height, style, onResize, children, ...resizeProps } = props
+  const {
+    handle,
+    handleSize,
+    onResize,
+    onResizeStart,
+    onResizeStop,
+    draggableOpts,
+    minConstraints,
+    maxConstraints,
+    lockAspectRatio,
+    axis,
+    width,
+    height,
+    resizeHandles,
+    style,
+    transformScale,
+    ...extraProps
+  } = props
   const [state, setState] = useState<SizeState>({
     width,
     height,
     propsWidth: width,
     propsHeight: height
   })
+  // const state = useRef({
+  //   width,
+  //   height,
+  //   propsWidth: width,
+  //   propsHeight: height
+  // })
 
-  const { style, onResize, children, ...resizeProps } = props
-
-  const handleResize: ResizeEvent = (e, data) => {
+  const handleResize: ResizeEvent = useCallback((e, data) => {
     const { size } = data
-    console.log(size)
-    // eslint-disable-next-line no-unused-expressions
-    e.persist && e.persist()
-    setState({ ...state, ...size })
 
     if (onResize) {
       onResize(e, data)
+      e.persist?.()
     }
-  }
+
+    setState(size)
+    // state.current = { ...state.current, ...size }
+  }, [])
 
   return (
-    <ResizeCore {...resizeProps} onResize={handleResize} width={state.height} height={state.height}>
-      <div style={{ ...style, width: `${state.width}px`, height: `${state.height}px` }}>
-        {[children]}
-      </div>
+    <ResizeCore
+      axis={axis}
+      draggableOpts={draggableOpts}
+      handle={handle}
+      handleSize={handleSize}
+      height={state.height}
+      lockAspectRatio={lockAspectRatio}
+      maxConstraints={maxConstraints}
+      minConstraints={minConstraints}
+      onResizeStart={onResizeStart}
+      onResize={handleResize}
+      onResizeStop={onResizeStop}
+      resizeHandles={resizeHandles}
+      transformScale={transformScale}
+      width={state.width}
+    >
+      <div
+        {...extraProps}
+        style={{ ...style, width: `${state.width}px`, height: `${state.height}px` }}
+      />
     </ResizeCore>
   )
 }

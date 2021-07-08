@@ -121,12 +121,16 @@ const DragCore: FC<DragCoreProps> = (props) => {
       if (shouldUpdate === false) {
         // TODO:
         // Old browser support
-        // @ts-ignore
-        handleDragStop(new MouseEvent('mouseup'))
+        try {
+          handleDragStop(new MouseEvent('mouseup') as MouseTouchEvent)
+        } catch (err) {
+          const event = document.createEvent('MouseEvent') as MouseTouchEvent
+          handleDragStop(event)
+        }
         return
       }
 
-      stateRef.current = { ...state, dragging: true, lastX: x, lastY: y }
+      stateRef.current = { ...state, lastX: x, lastY: y }
     },
     [domNode]
   )
