@@ -1,4 +1,8 @@
+/* eslint-disable global-require */
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { addBabelPlugins, override } = require('customize-cra')
+const { addBabelPlugins, override, addPostcssPlugins } = require('customize-cra')
 
-module.exports = override(...addBabelPlugins('emotion'))
+module.exports = override(
+  ...addBabelPlugins('emotion'),
+  addPostcssPlugins([require('tailwindcss'), require('autoprefixer')])
+)

@@ -1,17 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { ThemeProvider } from 'emotion-theming'
+// import { ThemeProvider } from 'emotion-theming'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
-import { theme } from './assets/styles'
+// import { theme } from './assets/styles'
 
-import 'merely.css'
+// import 'merely.css'
+import './assets/styles/index.css'
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
+    {/* <ThemeProvider theme={theme}> */}
+    <App />
+    {/* </ThemeProvider> */}
   </React.StrictMode>,
   document.getElementById('root')
 )

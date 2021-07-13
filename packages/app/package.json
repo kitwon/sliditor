@@ -46,6 +46,9 @@
   "devDependencies": {
     "@types/react-redux": "^7.1.9",
     "@types/redux-logger": "^3.0.8",
-    "eslint": "^7.4.0"
+    "autoprefixer": "^9",
+    "eslint": "^7.4.0",
+    "postcss": "^7",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   }
 }
