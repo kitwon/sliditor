@@ -34,7 +34,7 @@ const OptionList: FC<OptionProps> = (props) => {
   }, [])
 
   return (
-    <div className="relative bg-white">
+    <div className="relative">
       {TOOLBAR_ADD_OPTIONS.map((i) => (
         <div key={i.name}>
           <DragCore
@@ -42,7 +42,9 @@ const OptionList: FC<OptionProps> = (props) => {
             onStart={handleDrag(i.type, onDragStart)}
             onStop={handleDrag(i.type, onDragEnd)}
           >
-            <div>{i.name}</div>
+            <div className="text-gray-100 px-5 py-3 cursor-pointer rounded hover:bg-gray-600 text-center">
+              {i.name}
+            </div>
           </DragCore>
         </div>
       ))}

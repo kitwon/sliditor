@@ -17,7 +17,7 @@ interface Props extends OptionProps {
 
 const Toolbar: FC<Props> = (props) => {
   return (
-    <div>
+    <div className="absolute bg-gray-700 left-0 top-0 bottom-0">
       <div className="p-3">
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
         <OptionList {...props} />

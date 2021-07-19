@@ -1,11 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-// import { ThemeProvider } from 'emotion-theming'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
-// import { theme } from './assets/styles'
 
-// import 'merely.css'
 import './assets/styles/index.css'
 
 ReactDOM.render(

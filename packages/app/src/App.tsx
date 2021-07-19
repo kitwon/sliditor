@@ -2,7 +2,7 @@ import React from 'react'
 import Toolbar from './components/Toolbar'
 import Block from './components/Block'
 
-import './assets/styles/app.scss'
+// import './assets/styles/app.scss'
 import useCreateBlock from './hooks/useCreateBlock'
 
 function App() {
