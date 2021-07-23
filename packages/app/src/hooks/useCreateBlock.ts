@@ -27,7 +27,7 @@ export default function useCreateBlock() {
     const { x, y } = pos
     const curblock = getCurrentBlock()
     if ((x || y) && curblock) update(curblock.id, { ...curblock, position: pos, visible: true })
-  }, [pos, getCurrentBlock, update])
+  }, [pos])
 
   return { drag, dragStart, dragEnd, state }
 }

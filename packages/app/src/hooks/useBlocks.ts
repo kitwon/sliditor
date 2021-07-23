@@ -56,12 +56,12 @@ export default function useBlocks() {
     blockId += 1
   }
 
-  const getCurrentBlock = useCallback(() => {
+  const getCurrentBlock = () => {
     const { pages, currentPage, currentBlock } = state
     const pageBlocks = pages[currentPage]
     if (!pageBlocks || !currentBlock) return null
     return pageBlocks[currentBlock]
-  }, [state])
+  }
 
   return { state, update, add, select, getCurrentBlock }
 }

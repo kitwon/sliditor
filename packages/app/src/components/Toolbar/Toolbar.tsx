@@ -1,4 +1,5 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
+
 // import styled from '../../assets/styles'
 import OptionList, { OptionProps } from './OptionList'
 
@@ -12,12 +13,13 @@ import OptionList, { OptionProps } from './OptionList'
 // `
 
 interface Props extends OptionProps {
+  className?: any
   style?: CSSStyleSheet
 }
 
-const Toolbar: FC<Props> = (props) => {
+const Toolbar: FC<PropsWithChildren<Props>> = (props) => {
   return (
-    <div className="absolute bg-gray-700 left-0 top-0 bottom-0">
+    <div className="bg-gray-700 h-screen w-44">
       <div className="p-3">
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
         <OptionList {...props} />
