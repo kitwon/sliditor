@@ -10,16 +10,16 @@ function App() {
   const { drag, dragStart, dragEnd, state } = useCreateBlock()
 
   return (
-    <div className="flex">
+    <div className="pl-44">
       <Toolbar
-        className="flex-shrink-0"
+        className="absolute left-0 top-0 h-screen z-50"
         onDrag={drag}
         onDragStart={dragStart}
         onDragEnd={dragEnd}
       />
 
-      <div className="flex items-center justify-center flex-1">
-        <div>
+      <div className="playground relative h-screen">
+        <div className="absolute z-10 w-full h-full">
           {Object.keys(state.pages).map((page) => {
             const blocks = state.pages[page]
             return Object.keys(blocks).map((id) => {
@@ -29,7 +29,9 @@ function App() {
           })}
         </div>
 
-        <Grid />
+        <div className="w-full h-full absolute top-0 z-0 flex items-center justify-center">
+          <Grid />
+        </div>
       </div>
     </div>
   )

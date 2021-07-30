@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
     "lib": [
       "dom",
       "dom.iterable",
@@ -20,7 +20,6 @@
     "jsx": "react"
   },
   "include": [
-    "packages/**/*.js",
     "packages/**/*.ts",
     "packages/**/*.tsx",
   ]

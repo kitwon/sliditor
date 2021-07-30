@@ -26,7 +26,7 @@ const BlockContainer: FC<BlockProps> = (props) => {
   return (
     <Draggable position={pos} onDrag={(e, coreData) => setPos({ x: coreData.x, y: coreData.y })}>
       {/* <BlockWrap block={block}>{block.content}</BlockWrap> */}
-      <div>{block.content}</div>
+      <div className="fixed cursor-pointer">{block.content}</div>
     </Draggable>
   )
 }
