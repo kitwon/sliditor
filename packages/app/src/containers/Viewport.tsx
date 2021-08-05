@@ -1,16 +1,27 @@
 import React, { FC } from 'react'
 import Block from '../components/Block'
+import Grid from '../components/Grid'
+import { useAppSelector } from '../hooks/store'
 
 const Viewport = () => {
+  const { pages } = useAppSelector((root) => root.pages)
+  const { viewport, grid } = useAppSelector((root) => root.setting)
+
   return (
-    <div className="absolute z-10 w-full h-full">
-      {Object.keys(state.pages).map((page) => {
-        const blocks = state.pages[page]
-        return Object.keys(blocks).map((id) => {
-          const block = blocks[id]
-          return <Block block={block} key={block.id} />
-        })
-      })}
+    <div className="playground relative h-screen">
+      <div className="absolute z-10 w-full h-full">
+        {Object.keys(pages).map((page) => {
+          const blocks = pages[page]
+          return Object.keys(blocks).map((id) => {
+            const block = blocks[id]
+            return <Block block={block} key={block.id} />
+          })
+        })}
+      </div>
+
+      <div className="w-full h-full absolute top-0 z-0 flex items-center justify-center">
+        <Grid width={viewport.width} height={viewport.height} grid={grid} />
+      </div>
     </div>
   )
 }

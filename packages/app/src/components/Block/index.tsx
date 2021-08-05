@@ -6,15 +6,6 @@ interface BlockProps {
   block: Block
 }
 
-// const BlockWrap = styled.div<Partial<BlockProps>>`
-//   display: ${({ block }) => (block?.visible ? 'inline-block' : 'none')};
-//   position: absolute;
-//   cursor: pointer;
-//   font-size: 20px;
-//   color: #fff;
-//   font-weight: bold;
-// `
-
 const BlockContainer: FC<BlockProps> = (props) => {
   const { block } = props
   const [pos, setPos] = useState(block.position)

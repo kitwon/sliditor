@@ -14,10 +14,12 @@ export default function useCreateBlock() {
     [add]
   )
 
-  const drag: OptionEvent = useCallback((type, coreData) => {
-    const { x, y } = coreData
-    setPos({ x, y })
-  }, [])
+  const drag: OptionEvent = (type, coreData) => {
+    requestAnimationFrame(() => {
+      const { x, y } = coreData
+      setPos({ x, y })
+    })
+  }
 
   const dragEnd: OptionEvent = useCallback(() => {
     setPos({ x: 0, y: 0 })

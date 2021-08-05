@@ -1,5 +1,7 @@
-import { useReducer, Reducer, useCallback } from 'react'
+import { useCallback } from 'react'
 import { Block, BlockProps } from '../models/block'
+import { selectBlock, updateBlock } from '../store/modules/pages'
+import { useAppDispatch, useAppSelector } from './store'
 import * as types from './types'
 
 interface SlidesState {
@@ -10,44 +12,13 @@ interface SlidesState {
 
 let blockId = 1
 
-const initialState: SlidesState = {
-  currentPage: 1,
-  currentBlock: null,
-  pages: {}
-}
-
-function reducer(state: SlidesState, action: types.SlidesActions) {
-  const { currentPage, pages } = state
-
-  switch (action.type) {
-    case types.UPDATE_BLOCK: {
-      const currentBlocks = pages[currentPage]
-      return {
-        currentPage,
-        currentBlock: action.id,
-        pages: { [currentPage]: { ...currentBlocks, [action.id]: action.payload } }
-      }
-    }
-    case types.SELECT_BLOCK: {
-      return {
-        ...state,
-        currentBlock: action.id
-      }
-    }
-    default:
-      return state
-  }
-}
-
 export default function useBlocks() {
-  const [state, dispatch] = useReducer(reducer as Reducer<SlidesState, types.SlidesActions>, {
-    ...initialState
-  })
+  const state = useAppSelector((rootState) => rootState.pages)
+  const dispatch = useAppDispatch()
 
-  const update = (id: string, block: Block) =>
-    dispatch({ type: types.UPDATE_BLOCK, id, payload: block })
+  const update = (id: string, block: Block) => dispatch(updateBlock({ id, block: { ...block } }))
 
-  const select = useCallback((id: string) => dispatch({ type: types.SELECT_BLOCK, id }), [])
+  const select = useCallback((id: string) => dispatch(selectBlock({ id })), [])
 
   const add = (type: string, blockProps?: Partial<BlockProps>) => {
     const id = `${state.currentPage}.${blockId}`

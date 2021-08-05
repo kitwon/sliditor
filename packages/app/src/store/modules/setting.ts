@@ -8,6 +8,7 @@ const initialState = {
     row: 0
   },
   viewport: {
+    name: '',
     width: 0,
     height: 0
   }
