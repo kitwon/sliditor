@@ -1,15 +1,23 @@
 import { useState, useCallback, useEffect } from 'react'
 import useBlocks from './useBlocks'
 import { OptionEvent } from '../components/Toolbar'
+import { useAppSelector } from './store'
 
 export default function useCreateBlock() {
   const [pos, setPos] = useState({ x: 0, y: 0 })
   const { state, getCurrentBlock, add, update } = useBlocks()
+  const setting = useAppSelector((root) => root.setting)
 
   const dragStart: OptionEvent = useCallback(
     (type, coreData, e) => {
       const { x, y } = coreData
-      add(type, { position: { x, y }, visible: false, content: 'Text' })
+      console.log(setting)
+      add(type, {
+        // position: { x: x - gridRect.left, y: y - gridRect.top },
+        position: { x, y },
+        visible: false,
+        content: 'Text'
+      })
     },
     [add]
   )

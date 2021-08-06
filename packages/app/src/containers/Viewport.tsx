@@ -1,11 +1,13 @@
 import React from 'react'
 import Block from '../components/Block'
 import Grid from '../components/Grid'
-import { useAppSelector } from '../hooks/store'
+import { useAppDispatch, useAppSelector } from '../hooks/store'
+import { updateGridRect } from '../store/modules/setting'
 
 const Viewport = () => {
   const { pages } = useAppSelector((root) => root.pages)
   const { viewport, grid } = useAppSelector((root) => root.setting)
+  const dispatch = useAppDispatch()
 
   return (
     <div className="playground relative h-screen">
@@ -28,7 +30,12 @@ const Viewport = () => {
       </div>
 
       <div className="w-full h-full absolute top-0 z-0">
-        <Grid width={viewport.width} height={viewport.height} grid={grid} />
+        <Grid
+          width={viewport.width}
+          height={viewport.height}
+          grid={grid}
+          onUpdateRect={(rect) => dispatch(updateGridRect(rect))}
+        />
       </div>
     </div>
   )

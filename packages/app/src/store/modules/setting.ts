@@ -10,6 +10,7 @@ const initialState = {
     color: '#eaeaea',
     borderColor: 'rgba(150,150,150,0.5)'
   },
+  gridRect: {} as DOMRect,
   viewport: {
     name: '',
     width: 0,
@@ -31,8 +32,16 @@ export const settingSlice = createSlice({
           ...state.grid
         }
       }
+    },
+    updateGridRect: (state, action: PayloadAction<typeof initialState['gridRect']>) => {
+      console.log(action.payload)
+      return {
+        ...state,
+        gridRect: action.payload
+      }
     }
   }
 })
 
+export const { updateViewport, updateGridRect } = settingSlice.actions
 export default settingSlice

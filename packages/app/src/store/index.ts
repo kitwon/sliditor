@@ -8,6 +8,7 @@ function getInitialState(): DeepPartial<RootState> {
   return {
     setting: {
       viewport,
+      gridRect: {},
       grid: {
         ...getGridSize(viewport.width, viewport.height),
         color: '#eaeaea',

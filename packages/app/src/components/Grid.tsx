@@ -1,4 +1,4 @@
-import React, { CSSProperties, FC } from 'react'
+import React, { CSSProperties, FC, useEffect, useRef } from 'react'
 import { RootState } from '../store'
 
 interface Props {
@@ -9,10 +9,18 @@ interface Props {
   color?: string
   strokeWidth?: number
   grid: RootState['setting']['grid']
+  onUpdateRect?: (rect: DOMRect) => any
 }
 
 const Grid: FC<Props> = (props) => {
-  const { className, width, height, grid, style, strokeWidth = 2 } = props
+  const { className, width, height, grid, onUpdateRect, strokeWidth = 2 } = props
+  const dom = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (dom.current) {
+      onUpdateRect?.(dom.current.getBoundingClientRect().toJSON())
+    }
+  }, [dom])
 
   return (
     <div
@@ -21,6 +29,7 @@ const Grid: FC<Props> = (props) => {
         width: `${width}px`,
         height: `${height}px`
       }}
+      ref={dom}
     >
       <svg id="svg" width={width} height={height} xmlns="http://www.w3.org/2000/svg">
         <defs>
