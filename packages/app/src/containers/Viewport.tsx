@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React from 'react'
 import Block from '../components/Block'
 import Grid from '../components/Grid'
 import { useAppSelector } from '../hooks/store'
@@ -9,7 +9,15 @@ const Viewport = () => {
 
   return (
     <div className="playground relative h-screen">
-      <div className="absolute z-10 w-full h-full">
+      {/* <div className="absolute z-10 w-full h-full"> */}
+      <div
+        className="absolute top-0 bottom-0 left-0 right-0 border-dashed border m-auto z-10"
+        style={{
+          width: `${viewport.width}px`,
+          height: `${viewport.height}px`,
+          borderColor: grid.borderColor
+        }}
+      >
         {Object.keys(pages).map((page) => {
           const blocks = pages[page]
           return Object.keys(blocks).map((id) => {
@@ -19,7 +27,7 @@ const Viewport = () => {
         })}
       </div>
 
-      <div className="w-full h-full absolute top-0 z-0 flex items-center justify-center">
+      <div className="w-full h-full absolute top-0 z-0">
         <Grid width={viewport.width} height={viewport.height} grid={grid} />
       </div>
     </div>

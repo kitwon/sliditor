@@ -1,29 +1,27 @@
-import React, { FC, useEffect, useState } from 'react'
-import { PRESENTATION_SIZE } from '../constants'
-import { getGridSize } from '../utils/viewport'
+import React, { CSSProperties, FC } from 'react'
+import { RootState } from '../store'
 
 interface Props {
   className?: string
+  style?: CSSProperties
   width: number
   height: number
   color?: string
   strokeWidth?: number
-  grid: ReturnType<typeof getGridSize>
+  grid: RootState['setting']['grid']
 }
 
 const Grid: FC<Props> = (props) => {
-  const { className, width, height, grid, color = '#eaeaea', strokeWidth = 2 } = props
-
-  // const [grid, updateGrid] = useState({
-  //   ...getGridSize(width, height)
-  // })
-
-  // useEffect(() => {
-  //   updateGrid({ ...getGridSize(width, height) })
-  // }, [width, height])
+  const { className, width, height, grid, style, strokeWidth = 2 } = props
 
   return (
-    <div className={className}>
+    <div
+      className={`absolute w-full h-full left-0 top-0 right-0 bottom-0 m-auto ${className}`}
+      style={{
+        width: `${width}px`,
+        height: `${height}px`
+      }}
+    >
       <svg id="svg" width={width} height={height} xmlns="http://www.w3.org/2000/svg">
         <defs>
           <pattern id="grid" width={grid.col} height={grid.row} patternUnits="userSpaceOnUse">
@@ -33,7 +31,7 @@ const Grid: FC<Props> = (props) => {
             <path
               d={`M ${grid.col} 0 H 0 V ${grid.row}`}
               fill="none"
-              stroke={color}
+              stroke={grid.color}
               strokeWidth={strokeWidth}
             />
           </pattern>

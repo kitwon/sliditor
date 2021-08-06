@@ -8,7 +8,11 @@ function getInitialState(): DeepPartial<RootState> {
   return {
     setting: {
       viewport,
-      grid: getGridSize(viewport.width, viewport.height)
+      grid: {
+        ...getGridSize(viewport.width, viewport.height),
+        color: '#eaeaea',
+        borderColor: 'rgba(150,150,150,0.5)'
+      }
     }
   }
 }
