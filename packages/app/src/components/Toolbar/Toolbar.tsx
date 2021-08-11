@@ -1,4 +1,5 @@
 import React, { FC, PropsWithChildren } from 'react'
+import useCreateBlock from '../../hooks/useCreateBlock'
 
 // import styled from '../../assets/styles'
 import OptionList, { OptionProps } from './OptionList'
@@ -19,11 +20,13 @@ interface Props extends OptionProps {
 
 const Toolbar: FC<PropsWithChildren<Props>> = (props) => {
   const { className } = props
+  const { drag, dragStart, dragEnd } = useCreateBlock()
+
   return (
     <div className={`bg-gray-700 h-screen w-44 ${className}`}>
       <div className="p-3">
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-        <OptionList {...props} />
+        <OptionList onDrag={drag} onDragStart={dragStart} onDragEnd={dragEnd} />
       </div>
     </div>
   )

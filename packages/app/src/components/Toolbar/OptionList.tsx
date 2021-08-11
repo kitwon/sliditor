@@ -11,27 +11,19 @@ export interface OptionProps {
   onDragEnd?: OptionEvent
 }
 
-// const AddOption = styled.div`
-//   color: ${({ theme }) => theme.colors.gray[1]};
-//   text-align: center;
-//   padding: 20px 10px;
-//   cursor: pointer;
-//   border-radius: 3px;
-//   &:hover {
-//     background-color: ${({ theme }) => theme.colors.gray[6]};
-//   }
-// `
-
 const OptionList: FC<OptionProps> = (props) => {
   const { onDrag, onDragStart, onDragEnd } = props
-  const handleDrag = useCallback((type: string, event?: OptionEvent) => {
-    const drag: DraggableEventHandler = (e, coreData) => {
-      if (event) return event(type, coreData, e)
-      return true
-    }
+  const handleDrag = useCallback(
+    (type: string, event?: OptionEvent) => {
+      const drag: DraggableEventHandler = (e, coreData) => {
+        if (event) return event(type, coreData, e)
+        return true
+      }
 
-    return drag
-  }, [])
+      return drag
+    },
+    [onDrag, onDragStart, onDragEnd]
+  )
 
   return (
     <div className="relative">
@@ -39,7 +31,7 @@ const OptionList: FC<OptionProps> = (props) => {
         <div key={i.name}>
           <DragCore
             onDrag={handleDrag(i.type, onDrag)}
-            onStart={handleDrag(i.type, onDragStart)}
+            onStart={(e, core) => onDragStart?.(i.type, core, e)}
             onStop={handleDrag(i.type, onDragEnd)}
           >
             <div className="text-gray-100 px-5 py-3 cursor-pointer rounded hover:bg-gray-600 text-center">

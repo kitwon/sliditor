@@ -133,92 +133,78 @@ const Draggable: FC<DraggableProps> = (props) => {
   }, [position])
 
   // Actions
-  const handleDragStart: DraggableEventHandler = useCallback(
-    (e, coreData) => {
-      const state = stateRef.current
-      log('Draggable: handleDragStart: %j', coreData)
+  const handleDragStart: DraggableEventHandler = (e, coreData) => {
+    const state = stateRef.current
+    log('Draggable: handleDragStart: %j', coreData)
 
-      const sholdStart =
-        onStart && onStart(e, createDraggableData({ x: state.x, y: state.y, scale, coreData }))
-      if (sholdStart === false) return false
+    const sholdStart =
+      onStart && onStart(e, createDraggableData({ x: state.x, y: state.y, scale, coreData }))
+    if (sholdStart === false) return false
 
-      setState({ ...state, dragging: true, dragged: true })
-      return undefined
-    },
-    [stateRef]
-  )
+    setState({ ...state, dragging: true, dragged: true })
+    return undefined
+  }
 
-  const handleDrag: DraggableEventHandler = useCallback(
-    (e, coreData) => {
-      const state = stateRef.current
-      if (!state.dragging) return undefined
+  const handleDrag: DraggableEventHandler = (e, coreData) => {
+    const state = stateRef.current
+    if (!state.dragging) return undefined
 
-      log('Draggable: handleDrag: %j', coreData)
-      const uiData = createDraggableData({ x: state.x, y: state.y, scale, coreData })
+    log('Draggable: handleDrag: %j', coreData)
+    const uiData = createDraggableData({ x: state.x, y: state.y, scale, coreData })
 
-      const newState = {
-        x: uiData.x,
-        y: uiData.y,
-        slackX: 0,
-        slackY: 0
-      }
+    const newState = {
+      x: uiData.x,
+      y: uiData.y,
+      slackX: 0,
+      slackY: 0
+    }
 
-      // if (bounds) {
-      const { x, y } = newState
+    // if (bounds) {
+    const { x, y } = newState
 
-      newState.x += state.slackX
-      newState.y += state.slackY
+    newState.x += state.slackX
+    newState.y += state.slackY
 
-      if (state.domNode) {
-        const [newStateX, newStateY] = getBoundPosition(
-          state.domNode,
-          bounds,
-          newState.x,
-          newState.y
-        )
-        newState.x = newStateX
-        newState.y = newStateY
+    if (state.domNode) {
+      const [newStateX, newStateY] = getBoundPosition(state.domNode, bounds, newState.x, newState.y)
+      newState.x = newStateX
+      newState.y = newStateY
 
-        newState.slackX = state.slackX + (x - newState.x)
-        newState.slackY = state.slackY + (y - newState.y)
-      }
+      newState.slackX = state.slackX + (x - newState.x)
+      newState.slackY = state.slackY + (y - newState.y)
+    }
 
-      uiData.x = newState.x
-      uiData.y = newState.y
-      uiData.deltaX = newState.x - state.x
-      uiData.deltaY = newState.y - state.y
-      // }
+    uiData.x = newState.x
+    uiData.y = newState.y
+    uiData.deltaX = newState.x - state.x
+    uiData.deltaY = newState.y - state.y
+    // }
 
-      const shouldUpdate = onDrag && onDrag(e, uiData)
-      if (shouldUpdate === false) return false
+    const shouldUpdate = onDrag && onDrag(e, uiData)
+    if (shouldUpdate === false) return false
 
-      setState({ ...state, ...newState })
-      return undefined
-    },
-    [stateRef]
-  )
+    setState({ ...state, ...newState })
+    return undefined
+  }
 
-  const handleDragStop: DraggableEventHandler = useCallback(
-    (e, coreData) => {
-      const state = stateRef.current
-      if (!state.dragging) return undefined
+  const handleDragStop: DraggableEventHandler = (e, coreData) => {
+    const state = stateRef.current
+    if (!state.dragging) return undefined
 
-      const shouldContinune = onStop && onStop(e, coreData)
-      if (shouldContinune === false) return false
+    const shouldContinune = onStop && onStop(e, coreData)
+    if (shouldContinune === false) return false
 
-      log('Draggable: onDragStop: %j', coreData)
+    log('Draggable: onDragStop: %j', coreData)
 
-      const newState: Partial<typeof state> = {
-        dragging: false,
-        slackX: 0,
-        slackY: 0
-      }
+    const newState: Partial<typeof state> = {
+      dragging: false,
+      slackX: 0,
+      slackY: 0
+    }
 
-      setState({ ...state, ...newState })
-      return undefined
-    },
-    [stateRef]
-  )
+    setState({ ...state, ...newState })
+    return undefined
+  }
 
   return (
     <DragCore

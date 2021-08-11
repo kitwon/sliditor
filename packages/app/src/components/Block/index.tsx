@@ -14,10 +14,13 @@ const BlockContainer: FC<BlockProps> = (props) => {
     setPos(block.position)
   }, [block.position])
 
+  useEffect(() => {
+    console.log(pos)
+  }, [pos])
+
   return (
     <Draggable position={pos} onDrag={(e, coreData) => setPos({ x: coreData.x, y: coreData.y })}>
-      {/* <BlockWrap block={block}>{block.content}</BlockWrap> */}
-      <div className="fixed cursor-pointer">{block.content}</div>
+      <div className="fixed cursor-pointer z-50">{block.content}</div>
     </Draggable>
   )
 }

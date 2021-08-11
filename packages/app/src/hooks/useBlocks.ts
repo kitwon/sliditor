@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { Block, BlockProps } from '../models/block'
 import { selectBlock, updateBlock } from '../store/modules/pages'
 import { useAppDispatch, useAppSelector } from './store'
-import * as types from './types'
+// import * as types from './types'
 
 interface SlidesState {
   currentPage: number
@@ -20,6 +20,11 @@ export default function useBlocks() {
 
   const select = useCallback((id: string) => dispatch(selectBlock({ id })), [])
 
+  /**
+   * Add new block
+   * @param type block type
+   * @param blockProps - block props
+   */
   const add = (type: string, blockProps?: Partial<BlockProps>) => {
     const id = `${state.currentPage}.${blockId}`
     const block = new Block({ id, type, ...blockProps })
@@ -27,6 +32,9 @@ export default function useBlocks() {
     blockId += 1
   }
 
+  /**
+   * Get selected block
+   */
   const getCurrentBlock = () => {
     const { pages, currentPage, currentBlock } = state
     const pageBlocks = pages[currentPage]

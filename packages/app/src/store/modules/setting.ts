@@ -34,10 +34,9 @@ export const settingSlice = createSlice({
       }
     },
     updateGridRect: (state, action: PayloadAction<typeof initialState['gridRect']>) => {
-      console.log(action.payload)
       return {
         ...state,
-        gridRect: action.payload
+        gridRect: { ...action.payload }
       }
     }
   }

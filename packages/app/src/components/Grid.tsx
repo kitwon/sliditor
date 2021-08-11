@@ -14,11 +14,11 @@ interface Props {
 
 const Grid: FC<Props> = (props) => {
   const { className, width, height, grid, onUpdateRect, strokeWidth = 2 } = props
-  const dom = useRef<HTMLElement | null>(null)
+  const dom = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (dom.current) {
-      onUpdateRect?.(dom.current.getBoundingClientRect().toJSON())
+      onUpdateRect?.({ ...dom.current.getBoundingClientRect().toJSON() })
     }
   }, [dom])
 

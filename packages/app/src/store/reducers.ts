@@ -7,8 +7,8 @@ import pages from './modules/pages'
 //   pages: pages.reducer
 // }
 const rootReducers = combineReducers({
-  setting: setting.reducer,
-  pages: pages.reducer
+  [setting.name]: setting.reducer,
+  [pages.name]: pages.reducer
 })
 
 export default rootReducers

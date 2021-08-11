@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect, cloneElement, useState } from 'react';
+import React, { useRef, useEffect, cloneElement, useState } from 'react';
 
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
@@ -615,7 +615,8 @@ var DragCore = function DragCore(props) {
   // const domNode = ref as MutableRefObject<HTMLElement>
 
   var domNode = useRef(null);
-  var handleDrag = useCallback(function (e) {
+
+  var handleDrag = function handleDrag(e) {
     var state = stateRef.current;
     var position = getContnrolPosition(e, domNode, state.touchIndentifier, scale);
     if (position === null) return;
@@ -654,8 +655,9 @@ var DragCore = function DragCore(props) {
       lastX: x,
       lastY: y
     });
-  }, [domNode]);
-  var handleDragStop = useCallback(function (e) {
+  };
+
+  var handleDragStop = function handleDragStop(e) {
     var state = stateRef.current;
     if (!state.dragging) return;
     var position = getContnrolPosition(e, domNode, state.touchIndentifier, scale);
@@ -680,13 +682,14 @@ var DragCore = function DragCore(props) {
       removeEvent(domNode.current.ownerDocument, dragEvent.move, handleDrag);
       removeEvent(domNode.current.ownerDocument, dragEvent.stop, handleDragStop);
     }
-  }, [domNode]);
+  };
   /**
    * Handle staring
    * @param { MouseTouchEvent } e Event
    */
 
-  var handleDragStart = useCallback(function (e) {
+
+  var handleDragStart = function handleDragStart(e) {
     var state = stateRef.current;
     if (onMousedown) onMousedown(e); // Only accept left click from mouse
 
@@ -724,23 +727,28 @@ var DragCore = function DragCore(props) {
     });
     addEvent(ownerDocument, dragEvent.move, handleDrag);
     addEvent(ownerDocument, dragEvent.stop, handleDragStop);
-  }, [domNode]);
-  var onMouseDown = useCallback(function (e) {
+  };
+
+  var onMouseDown = function onMouseDown(e) {
     dragEvent = events.mouse;
     return handleDragStart(e);
-  }, []);
-  var onMouseUp = useCallback(function (e) {
+  };
+
+  var onMouseUp = function onMouseUp(e) {
     dragEvent = events.mouse;
     return handleDragStop(e);
-  }, []);
-  var onTouchStart = useCallback(function (e) {
+  };
+
+  var onTouchStart = function onTouchStart(e) {
     dragEvent = events.touch;
     return handleDragStart(e);
-  }, []);
-  var onTouchEnd = useCallback(function (e) {
+  };
+
+  var onTouchEnd = function onTouchEnd(e) {
     dragEvent = events.touch;
     return handleDragStop(e);
-  }, []);
+  };
+
   useEffect(function () {
     if (domNode.current) {
       domRef === null || domRef === void 0 ? void 0 : domRef(domNode.current);
@@ -884,7 +892,7 @@ var Draggable = function Draggable(props) {
     }
   }, [position]); // Actions
 
-  var handleDragStart = useCallback(function (e, coreData) {
+  var handleDragStart = function handleDragStart(e, coreData) {
     var state = stateRef.current;
     var sholdStart = onStart && onStart(e, createDraggableData({
       x: state.x,
@@ -898,8 +906,9 @@ var Draggable = function Draggable(props) {
       dragged: true
     }));
     return undefined;
-  }, [stateRef]);
-  var handleDrag = useCallback(function (e, coreData) {
+  };
+
+  var handleDrag = function handleDrag(e, coreData) {
     var state = stateRef.current;
     if (!state.dragging) return undefined;
     var uiData = createDraggableData({
@@ -941,8 +950,9 @@ var Draggable = function Draggable(props) {
     if (shouldUpdate === false) return false;
     setState(_objectSpread2(_objectSpread2({}, state), newState));
     return undefined;
-  }, [stateRef]);
-  var handleDragStop = useCallback(function (e, coreData) {
+  };
+
+  var handleDragStop = function handleDragStop(e, coreData) {
     var state = stateRef.current;
     if (!state.dragging) return undefined;
     var shouldContinune = onStop && onStop(e, coreData);
@@ -954,7 +964,8 @@ var Draggable = function Draggable(props) {
     };
     setState(_objectSpread2(_objectSpread2({}, state), newState));
     return undefined;
-  }, [stateRef]);
+  };
+
   return /*#__PURE__*/React.createElement(DragCore, _extends({}, _objectSpread2(_objectSpread2({}, props), {}, {
     onStart: handleDragStart,
     onDrag: handleDrag,
@@ -968,6 +979,5 @@ var Draggable = function Draggable(props) {
   }), /*#__PURE__*/cloneElement(children, _objectSpread2({}, childProps)));
 };
 
-export default Draggable;
-export { DragCore };
+export { DragCore, Draggable as default };
 //# sourceMappingURL=draggable.esm.js.map
